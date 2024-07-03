@@ -150,6 +150,18 @@ void MapView::mousePressEvent(QMouseEvent* event)
 }
 
 
+uint32_t MapView::NumSpawns()
+{
+   return spawns_.size();
+}
+
+
+MapView::Spawn& MapView::GetSpawn(const uint32_t num)
+{
+   return spawns_[num];
+}
+
+
 bool MapView::OpenFile(const QString& path)
 {
    QFile file(path);

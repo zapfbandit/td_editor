@@ -59,10 +59,6 @@ MainWindow::MainWindow(QWidget *parent):
 
    spriteMgr_.Init(ui->mapView_->scene(), &pixmapStore_);
 
-spriteMgr_.Add(0.5, 0.5, 1, 0, 1, "Enemies", "Zombie", 6, 2, 0.1);
-
-spriteMgr_.Add(0.5, 0.5, 0, 1, 2, "Enemies", "Zombie - Big", 6, 2, 0.1);
-
    QTimer::singleShot(0, this, &MainWindow::OpenLastMap);
 
    QTimer::singleShot(0, this, &MainWindow::Tick);
@@ -81,6 +77,31 @@ MainWindow::~MainWindow()
 void MainWindow::OpenLastMap()
 {
    DoOpenMap(settings_.MapPath());
+
+   uint32_t numSpawns = ui->mapView_->NumSpawns();
+
+   if (numSpawns > 0)
+   {
+      for (uint32_t i = 0; i < numSpawns; ++i)
+      {
+         MapView::Spawn spawn = ui->mapView_->GetSpawn(i);
+
+         double x = spawn.x_ + spawn.dx_ + 0.5;
+         double dx = -spawn.dx_;
+         double y = spawn.y_ + spawn.dy_ + 0.5;
+         double dy = -spawn.dy_;
+
+qDebug() << x << y << dx << dy;
+
+         spriteMgr_.Add(x, y, dx, dy, 1, "Enemies", "Zombie", 6, 2, 0.1);
+      }
+   }
+   else
+   {
+      spriteMgr_.Add(0.5, 0.5, 1, 0, 1, "Enemies", "Zombie", 6, 2, 0.1);
+
+      spriteMgr_.Add(0.5, 0.5, 0, 1, 2, "Enemies", "Zombie - Big", 6, 2, 0.1);
+   }
 }
 
 

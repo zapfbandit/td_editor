@@ -18,6 +18,16 @@ public:
 
 public:
 
+   struct Spawn
+   {
+      double x_;
+      double y_;
+      double dx_;
+      double dy_;
+   };
+
+public:
+
    void ShowGrid(const bool showGrid);
 
    void SetSettings(Settings* settings);
@@ -25,6 +35,10 @@ public:
    void SetSelectedView(SelectedView* selectedView);
    void SetSize(const uint32_t width, const uint32_t height);
    void Render();
+
+public:
+   uint32_t NumSpawns();
+   Spawn& GetSpawn(const uint32_t num);
 
 public:
 
@@ -55,14 +69,6 @@ private:
    uint32_t* map_;
 
    bool showGrid_;
-
-   struct Spawn
-   {
-      uint32_t x_;
-      uint32_t y_;
-      int32_t dx_;
-      int32_t dy_;
-   };
 
    std::vector<Spawn> spawns_;
 
