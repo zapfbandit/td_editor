@@ -49,7 +49,7 @@ uint32_t SpriteMgr::Add(const double   x,
                         const QString& spriteName,
                         const uint32_t numFrames,
                         const double   framesPerSec,
-                        const double   pixelsPerSec)
+                        const double   gridPerSec)
 {
 qDebug() << "SpriteMgr::Add(...)";
 
@@ -58,7 +58,7 @@ qDebug() << "SpriteMgr::Add(...)";
       if (sprites_[i].Used() == false)
       {
          sprites_[i].Create(x, y, dx, dy, scale,
-                            spriteType, spriteName, numFrames, framesPerSec, pixelsPerSec);
+                            spriteType, spriteName, numFrames, framesPerSec, gridPerSec);
 
          return true;
       }

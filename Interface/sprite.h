@@ -38,7 +38,7 @@ public:
                const QString& spriteName,
                const uint32_t numFrames,
                const double   framesPerSec,
-               const double   pixelsPerSec);
+               const double   gridPerSec);
 
 public:
 
@@ -91,7 +91,7 @@ private:
 
    double framesPerSec_;
    double secsPerFrame_;
-   double pixelsPerSec_;
+   double gridPerSec_;
 
    QGraphicsPixmapItem* item_;
 };

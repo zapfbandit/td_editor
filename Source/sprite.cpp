@@ -33,7 +33,7 @@ bool Sprite::Create(const double   x,
                     const QString& spriteName,
                     const uint32_t numFrames,
                     const double   framesPerSec,
-                    const double   pixelsPerSec)
+                    const double   gridPerSec)
 {
    used_ = true;
 
@@ -52,7 +52,7 @@ bool Sprite::Create(const double   x,
    numFrames_    = numFrames;
    framesPerSec_ = framesPerSec;
    secsPerFrame_ = 1.0 / framesPerSec_;
-   pixelsPerSec_ = pixelsPerSec;
+   gridPerSec_   = gridPerSec;
 
    baseFrameIndex_ = store_->GetPixmapIndex(QString("%0/%1/Walk/%2").
                                              arg(spriteType_).
@@ -61,9 +61,10 @@ bool Sprite::Create(const double   x,
 
    QPixmap& pixmap = *store_->GetPixmap(baseFrameIndex_);
 
-//qDebug() << "Pos" << x << y;
+   // Centre the sprite
+   SetPos(x - 0.5 * scale, y - 0.5 * scale);
 
-   SetPos(x , y);
+//qDebug() << "Pos" << x << y;
 
    item_ = scene_->addPixmap(pixmap);
    item_->setScale(scale / pixmap.width());
@@ -157,13 +158,13 @@ void Sprite::Tick(const double renderTimeInSec)
 
    if (dx_ != 0.0)
    {
-      x_ += dx_ * pixelsPerSec_ * renderTimeInSec * item_->scale();
+      x_ += dx_ * gridPerSec_ * renderTimeInSec;
       UpdatePos(x_, y_);
    }
 
    if (dy_ != 0.0)
    {
-      y_ += dy_ * pixelsPerSec_ * renderTimeInSec * item_->scale();
+      y_ += dy_ * gridPerSec_ * renderTimeInSec;
       UpdatePos(x_, y_);
    }
 

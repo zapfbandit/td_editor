@@ -44,7 +44,7 @@ public:
                 const QString& spriteName,
                 const uint32_t numFrames,
                 const double   framesPerSec,
-                const double   pixelsPerSec);
+                const double   gridPerSec);
 
    void Tick(const double renderTimeInS);
 

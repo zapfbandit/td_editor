@@ -59,9 +59,9 @@ MainWindow::MainWindow(QWidget *parent):
 
    spriteMgr_.Init(ui->mapView_->scene(), &pixmapStore_);
 
-spriteMgr_.Add(1, 1, 1, 0, 48.0/64.0, "Enemies", "Zombie", 6, 3, 4);
+spriteMgr_.Add(0.5, 0.5, 1, 0, 1, "Enemies", "Zombie", 6, 2, 0.1);
 
-spriteMgr_.Add(1, 1, 0, 1, 96.0/64.0, "Enemies", "Zombie - Big", 6, 2, 4);
+spriteMgr_.Add(0.5, 0.5, 0, 1, 2, "Enemies", "Zombie - Big", 6, 2, 0.1);
 
    QTimer::singleShot(0, this, &MainWindow::OpenLastMap);
 
