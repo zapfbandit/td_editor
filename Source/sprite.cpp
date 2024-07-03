@@ -37,7 +37,6 @@ bool Sprite::Create(const double   x,
 {
    used_ = true;
 
-   timeInSec_ = 0.0;
 
    frame_ = 0;
 
@@ -53,6 +52,8 @@ bool Sprite::Create(const double   x,
    framesPerSec_ = framesPerSec;
    secsPerFrame_ = 1.0 / framesPerSec_;
    gridPerSec_   = gridPerSec;
+
+   timeInSec_ = secsPerFrame_ * numFrames_ * rand() / RAND_MAX;
 
    baseFrameIndex_ = store_->GetPixmapIndex(QString("%0/%1/Walk/%2").
                                              arg(spriteType_).

@@ -31,7 +31,10 @@ void TilesView::Render()
 
    for (uint32_t i = 0; i < tileStore_->NumTiles(); ++i)
    {
-      tileStore_->GetTile(i).Render(scene_, TILE_SPACE / 2.0 , TILE_SPACE + (TILE_SIZE + TILE_SPACE) * i, TILE_SIZE);
+      tileStore_->GetTile(i).Render(scene_,
+                                    TILE_SPACE / 2.0 ,
+                                    TILE_SPACE + (TILE_SIZE + TILE_SPACE) * i,
+                                    TILE_SIZE);
    }
 
    resizeEvent(nullptr);

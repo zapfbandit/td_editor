@@ -240,8 +240,8 @@ bool MapView::OpenFile(const QString& path)
 
       for (uint32_t i = 0; i < numSpawns; ++i)
       {
-         uint32_t index, x, y;
-         int32_t dx, dy;
+         double index, x, y;
+         double dx, dy;
          stream >> index >> x >> y >> dx >> dy;
          spawns_.push_back({x, y, dx, dy});
       }
@@ -346,7 +346,7 @@ bool MapView::SaveToFile(const QString& path)
              ((tileId & 0x8) == 0))
          {
 //qDebug() << "Left" << tileId << 0 << y;
-            spawns_.push_back({0, y, -1, 0});
+            spawns_.push_back({(double)0, (double)y, (double)-1, (double)0});
          }
 
          tileId = map_[width_ * y + width_ - 1] - 1;
@@ -354,7 +354,7 @@ bool MapView::SaveToFile(const QString& path)
              ((tileId & 0x2) == 0))
          {
 //qDebug() << "Right" << tileId << width_ - 1 << y;
-            spawns_.push_back({width_ - 1, y, 1, 0});
+            spawns_.push_back({(double)(width_ - 1), (double)y, (double)1, (double)0});
          }
       }
 
@@ -365,7 +365,7 @@ bool MapView::SaveToFile(const QString& path)
              ((tileId & 0x1) == 0))
          {
 //qDebug() << "Up" << tileId << x << 0;
-            spawns_.push_back({x, 0, 0, -1});
+            spawns_.push_back({(double)x, (double)0, (double)0, (double)-1});
          }
 
          tileId = map_[width_ * (height_ - 1) + x] - 1;
@@ -373,7 +373,7 @@ bool MapView::SaveToFile(const QString& path)
              ((tileId & 0x4) == 0))
          {
 //qDebug() << "Down" << tileId << x << height_ - 1;
-            spawns_.push_back({x, height_ - 1, 0, 1});
+            spawns_.push_back({(double)x, (double)(height_ - 1), (double)0, (double)1});
          }
       }
 

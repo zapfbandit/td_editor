@@ -21,7 +21,7 @@ qDebug() << "OK";
 
 SpriteMgr::~SpriteMgr()
 {
-qDebug() << "SpriteMgr::It a killin' time...";
+qDebug() << "SpriteMgr::It's a killin' time...";
 
    delete [] sprites_;
 }

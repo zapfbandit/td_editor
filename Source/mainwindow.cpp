@@ -91,9 +91,25 @@ void MainWindow::OpenLastMap()
          double y = spawn.y_ + spawn.dy_ + 0.5;
          double dy = -spawn.dy_;
 
-qDebug() << x << y << dx << dy;
+         qDebug() << x << y << dx << dy;
 
-         spriteMgr_.Add(x, y, dx, dy, 1, "Enemies", "Zombie", 6, 2, 0.1);
+         for (uint32_t i = 0; i < 3; ++i)
+         {
+            double px = 0;
+            double py = 0;
+            do
+            {
+               px = (rand() - RAND_MAX/2.0) / (RAND_MAX/2.0);
+               py = (rand() - RAND_MAX/2.0) / (RAND_MAX/2.0);
+
+               qDebug() << px << py;
+            }
+            while (px*px + py*py > 1);
+
+            qDebug() << "Ok";
+
+            spriteMgr_.Add(x + 0.25*px, y + 0.25*py, dx, dy, 48.0/64.0, "Enemies", "Zombie", 6, 2.5, 0.05);
+         }
       }
    }
    else
