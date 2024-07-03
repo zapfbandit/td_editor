@@ -42,6 +42,7 @@ QGraphicsPixmapItem* Tile::Render(QGraphicsScene& scene,
 
    item->setPos(x, y);
    item->setScale(size / pixmap_.width());
+   item->setZValue(-66);
 
    return item;
 }

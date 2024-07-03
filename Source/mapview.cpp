@@ -90,7 +90,7 @@ void MapView::Render()
       }
    }
 
-   if (showGrid_ == true)
+   /*if (showGrid_ == true)
    {
       for (uint32_t y = 0; y <= height_; ++y)
       {
@@ -98,6 +98,7 @@ void MapView::Render()
          QPen pen = line->pen();
          pen.setWidthF(0.025);
          line->setPen(pen);
+         line->setZValue(-100);
 
          for (uint32_t x = 0; x <= width_; ++x)
          {
@@ -105,9 +106,10 @@ void MapView::Render()
             QPen pen = line->pen();
             pen.setWidthF(0.025);
             line->setPen(pen);
+            line->setZValue(-100);
          }
       }
-   }
+   }*/
 
    resizeEvent(nullptr);
 }

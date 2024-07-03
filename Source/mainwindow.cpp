@@ -101,14 +101,10 @@ void MainWindow::OpenLastMap()
             {
                px = (rand() - RAND_MAX/2.0) / (RAND_MAX/2.0);
                py = (rand() - RAND_MAX/2.0) / (RAND_MAX/2.0);
-
-               qDebug() << px << py;
             }
             while (px*px + py*py > 1);
 
-            qDebug() << "Ok";
-
-            spriteMgr_.Add(x + 0.25*px, y + 0.25*py, dx, dy, 48.0/64.0, "Enemies", "Zombie", 6, 2.5, 0.05);
+            spriteMgr_.Add(x + 0.2*px, y + 0.2*py, dx, dy, 1, "Enemies", "Zombie", 6, 3, 0.1);
          }
       }
    }
