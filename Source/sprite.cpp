@@ -70,7 +70,6 @@ bool Sprite::Create(const double   x,
    item_ = scene_->addPixmap(pixmap);
    item_->setScale(scale / pixmap.width());
    item_->setPos(x, y);
-   item_->setZValue(1.0); // Move to front
 
    Tick(0.0);
 
@@ -170,4 +169,6 @@ void Sprite::Tick(const double renderTimeInSec)
    }
 
 //qDebug() << x_ << y_;
+
+   item_->setZValue(y_); // Use y value for z-sorting.
 }
