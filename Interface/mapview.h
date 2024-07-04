@@ -45,6 +45,11 @@ public:
    bool OpenFile(const QString& path);
    bool SaveToFile(const QString& path);
 
+public:
+   void DoEggFlood(const uint32_t x,
+                   const uint32_t y,
+                   const uint32_t dist);
+
 signals:
    void Changed();
 
@@ -67,6 +72,7 @@ private:
    uint32_t height_;
 
    uint32_t* map_;
+   uint32_t* egg_;
 
    bool showGrid_;
 

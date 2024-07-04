@@ -16,6 +16,7 @@ MapView::MapView(QWidget* parent):
    width_(0),
    height_(0),
    map_(nullptr),
+   egg_(nullptr),
    showGrid_(true)
 {
    setScene(&scene_);
@@ -25,6 +26,7 @@ MapView::MapView(QWidget* parent):
 MapView::~MapView()
 {
    delete [] map_;
+   delete [] egg_;
 }
 
 
@@ -60,14 +62,17 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
    height_ = height;
 
    delete [] map_;
+   delete [] egg_;
 
    map_ = new uint32_t[width * height];
+   egg_ = new uint32_t[width * height];
 
    for (uint32_t y = 0; y < height_; ++y)
    {
       for (uint32_t x = 0; x < width_; ++x)
       {
          map_[width_ * y + x] = 0;
+         egg_[width_ * y + x] = width * height;
       }
    }
 
@@ -90,7 +95,7 @@ void MapView::Render()
       }
    }
 
-   /*if (showGrid_ == true)
+   if (showGrid_ == true)
    {
       for (uint32_t y = 0; y <= height_; ++y)
       {
@@ -98,7 +103,7 @@ void MapView::Render()
          QPen pen = line->pen();
          pen.setWidthF(0.025);
          line->setPen(pen);
-         line->setZValue(-100);
+         line->setZValue(-65);
 
          for (uint32_t x = 0; x <= width_; ++x)
          {
@@ -106,10 +111,10 @@ void MapView::Render()
             QPen pen = line->pen();
             pen.setWidthF(0.025);
             line->setPen(pen);
-            line->setZValue(-100);
+            line->setZValue(-65);
          }
       }
-   }*/
+   }
 
    resizeEvent(nullptr);
 }
@@ -218,6 +223,13 @@ bool MapView::OpenFile(const QString& path)
 
       SetSize(width, height);
 
+      struct EggPos
+      {
+         uint32_t x;
+         uint32_t y;
+      };
+
+      std::vector<EggPos> eggPos_;
       for (uint32_t y = 0; y < height_; ++y)
       {
          for (uint32_t x = 0; x < width_; ++x)
@@ -225,8 +237,33 @@ bool MapView::OpenFile(const QString& path)
             uint32_t tileId;
             stream >> tileId;
             map_[width_ * y + x] = indexMap[tileId];
+            uint32_t testGrid = indexMap[tileId] - 1;
+            if ((testGrid == 0x7) ||
+                (testGrid == 0xB) ||
+                (testGrid == 0xD) ||
+                (testGrid == 0xE))
+            {
+                qDebug() << testGrid << x << y;
+                eggPos_.push_back({x, y});
+            }
          }
       }
+
+for (auto it: eggPos_)
+{
+   qDebug() << "Egg" << it.x << it.y;
+   DoEggFlood(it.x, it.y, 0);
+}
+
+for (uint32_t y = 0; y < height_; ++y)
+{
+   QDebug deb = qDebug();
+   for (uint32_t x = 0; x < width_; ++x)
+   {
+      deb << egg_[width_ * y + x] << " ";
+   }
+   //stream << "\r\n";
+}
 
       stream >> readStr;
 //qDebug() << readStr;
@@ -285,6 +322,23 @@ qDebug() << i++ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  ")";
    }
 
    return false;
+}
+
+
+void MapView::DoEggFlood(const uint32_t x,
+                         const uint32_t y,
+                         const uint32_t dist)
+{
+   egg_[y * width_ + x] = dist;
+
+   uint32_t tileId = map_[width_ * y + x] - 1;
+
+   qDebug() << x << y << dist << tileId;
+
+   if ((y >= 1)          && ((tileId & 0x1) == 0) && (egg_[(y - 1) * width_ + x] > dist)) DoEggFlood(x, y - 1, dist + 1);
+   if ((x < width_ - 1)  && ((tileId & 0x2) == 0) && (egg_[y * width_ + (x + 1)] > dist)) DoEggFlood(x + 1, y, dist + 1);
+   if ((y < height_ - 1) && ((tileId & 0x4) == 0) && (egg_[(y + 1) * width_ + x] > dist)) DoEggFlood(x, y + 1, dist + 1);
+   if ((x >= 1)          && ((tileId & 0x8) == 0) && (egg_[y * width_ + (x - 1)] > dist)) DoEggFlood(x - 1, y, dist + 1);
 }
 
 

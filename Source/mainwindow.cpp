@@ -131,11 +131,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
     {
         QMessageBox::StandardButton resBtn = QMessageBox::question(this,
             tr("TD Editor"),
-            tr("Are you sure you want to discard changes to this map ?"),
-            QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+            tr("Do you want to save changes to the map before quitting?"),
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
             QMessageBox::Yes);
 
-        if (resBtn != QMessageBox::Yes)
+        if (resBtn == QMessageBox::Yes)
+        {
+           SaveMap();
+        }
+        else if (resBtn == QMessageBox::Cancel)
         {
            event->ignore();
            return;
