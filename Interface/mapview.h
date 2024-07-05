@@ -37,6 +37,11 @@ public:
    void Render();
 
 public:
+   uint32_t GetTile(const uint32_t x, const uint32_t y) const;
+   uint32_t GetEgg (const uint32_t x, const uint32_t y) const;
+   bool InBounds   (const int32_t  x, const int32_t  y) const;
+
+public:
    uint32_t NumSpawns();
    Spawn& GetSpawn(const uint32_t num);
 

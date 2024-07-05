@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent):
    restoreState(settings_.WindowState());
    restoreGeometry(settings_.WindowGeometry());
 
-   spriteMgr_.Init(ui->mapView_->scene(), &pixmapStore_);
+   spriteMgr_.Init(ui->mapView_->scene(), &pixmapStore_, ui->mapView_);
 
    QTimer::singleShot(0, this, &MainWindow::OpenLastMap);
 

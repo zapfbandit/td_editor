@@ -80,6 +80,26 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
 }
 
 
+uint32_t MapView::GetTile(const uint32_t x,
+                          const uint32_t y) const
+{
+   return map_[width_ * y + x];
+}
+
+
+uint32_t MapView::GetEgg(const uint32_t x,
+                         const uint32_t y) const
+{
+   return egg_[width_ * y + x];
+}
+
+bool MapView::InBounds(const int32_t x,
+                       const int32_t y) const
+{
+   return (x >= 0) && (y >= 0) && (x < width_) && (y < height_);
+}
+
+
 void MapView::Render()
 {
    //scene_.clear();
@@ -252,7 +272,7 @@ bool MapView::OpenFile(const QString& path)
 for (auto it: eggPos_)
 {
    qDebug() << "Egg" << it.x << it.y;
-   DoEggFlood(it.x, it.y, 0);
+   DoEggFlood(it.x, it.y, 10);
 }
 
 for (uint32_t y = 0; y < height_; ++y)

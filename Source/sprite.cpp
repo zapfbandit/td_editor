@@ -16,10 +16,12 @@ Sprite::~Sprite()
 
 
 void Sprite::Init(QGraphicsScene* scene,
-                  PixmapStore*    store)
+                  PixmapStore*    store,
+                  MapView*        map)
 {
    scene_ = scene;
    store_ = store;
+   map_   = map;
 }
 
 
@@ -36,7 +38,6 @@ bool Sprite::Create(const double   x,
                     const double   gridPerSec)
 {
    used_ = true;
-
 
    frame_ = 0;
 
@@ -55,21 +56,22 @@ bool Sprite::Create(const double   x,
 
    timeInSec_ = secsPerFrame_ * numFrames_ * rand() / RAND_MAX;
 
-   baseFrameIndex_ = store_->GetPixmapIndex(QString("%0/%1/Walk/%2").
-                                             arg(spriteType_).
-                                             arg(spriteName_).
-                                             arg(spriteDir_));
-
    QPixmap& pixmap = *store_->GetPixmap(baseFrameIndex_);
 
    // Centre the sprite
-   SetPos(x - 0.5 * scale, y - 0.5 * scale);
+
+   SetPos(x - 0.5 * scale,
+          y - 0.5 * scale);
+
+   lastX_ = (int32_t)x;
+   lastY_ = (int32_t)y;
 
 //qDebug() << "Pos" << x << y;
 
    item_ = scene_->addPixmap(pixmap);
    item_->setScale(scale / pixmap.width());
    item_->setPos(x, y);
+
 
    Tick(0.0);
 
@@ -113,19 +115,11 @@ void Sprite::SetVel(const double dx,
          spriteDir_ = "U";
       }
    }
-}
 
-
-void Sprite::UpdateFrame(const uint32_t frame)
-{
-   item_->setPixmap(*store_->GetPixmap(frame));
-}
-
-
-void Sprite::UpdatePos(const double x,
-                       const double y)
-{
-   item_->setPos(x, y);
+   baseFrameIndex_ = store_->GetPixmapIndex(QString("%0/%1/Walk/%2").
+                                             arg(spriteType_).
+                                             arg(spriteName_).
+                                             arg(spriteDir_));
 }
 
 
@@ -151,7 +145,7 @@ void Sprite::Tick(const double renderTimeInSec)
 
    if (frame_ != lastFrame)
    {
-      UpdateFrame(frame_);
+      item_->setPixmap(*store_->GetPixmap(frame_));
    }
 
 //qDebug() << "scale_ = " << scale_ << "item_->scale() = " << item_->scale();
@@ -159,16 +153,66 @@ void Sprite::Tick(const double renderTimeInSec)
    if (dx_ != 0.0)
    {
       x_ += dx_ * gridPerSec_ * renderTimeInSec;
-      UpdatePos(x_, y_);
+      item_->setPos(x_, y_);
    }
 
    if (dy_ != 0.0)
    {
       y_ += dy_ * gridPerSec_ * renderTimeInSec;
-      UpdatePos(x_, y_);
+      item_->setPos(x_, y_);
    }
 
 //qDebug() << x_ << y_;
+
+   int32_t x = (int32_t)floor(x_);
+   int32_t y = (int32_t)floor(y_);
+
+   if ((x != lastX_) || (y != lastY_))
+   {
+qDebug() << x << y << map_;
+      lastX_ = x;
+      lastY_ = y;
+
+      //uint32_t lastTile = map_->GetTile(lastX_, lastY_) - 1;
+
+      struct Dir
+      {
+         int32_t dx;
+         int32_t dy;
+      };
+
+      uint32_t minDir = 4;
+      uint32_t minEgg = 999;
+
+      const Dir dir[4] = {{ 0,-1},
+                          { 1, 0},
+                          { 0, 1},
+                          {-1, 0}};
+
+      for (uint32_t testDir = 0; testDir < 4; ++testDir)
+      {
+         int32_t testX = lastX_ + dir[testDir].dx;
+         int32_t testY = lastY_ + dir[testDir].dy;
+
+qDebug() << testX << testY;
+
+         if (map_->InBounds(testX, testY) == true)
+         {
+qDebug() << "OK";
+
+            uint32_t testEgg  = map_->GetEgg(testX, testY);
+
+            if (testEgg < minEgg)
+            {
+               minDir = testDir;
+               minEgg = testEgg;
+            }
+         }
+      }
+
+      SetVel(dir[minDir].dx, dir[minDir].dy);
+
+   }
 
    item_->setZValue(y_); // Use y value for z-sorting.
 }

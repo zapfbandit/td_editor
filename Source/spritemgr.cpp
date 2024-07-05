@@ -28,13 +28,14 @@ qDebug() << "SpriteMgr::It's a killin' time...";
 
 
 void SpriteMgr::Init(QGraphicsScene* scene,
-                     PixmapStore*    store)
+                     PixmapStore*    store,
+                     MapView*        map)
 {
 qDebug() << "SpriteMgr::Init(...)";
 
    for (uint32_t i = 0; i < maxSprites_; ++i)
    {
-      sprites_[i].Init(scene, store);
+      sprites_[i].Init(scene, store, map);
    }
 }
 

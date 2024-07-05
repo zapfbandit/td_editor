@@ -9,6 +9,7 @@
 #include <QGraphicsScene>
 
 #include "pixmapstore.h"
+#include "mapview.h"
 
 #include "sprite.h"
 
@@ -32,7 +33,8 @@ public:
 public:
 
    void Init(QGraphicsScene* scene,
-             PixmapStore*    store);
+             PixmapStore*    store,
+             MapView*        map);
 
    uint32_t Add(const double   x,
                 const double   y,

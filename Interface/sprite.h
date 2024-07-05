@@ -7,6 +7,7 @@
 #include <QGraphicsScene>
 
 #include "pixmapStore.h"
+#include "mapview.h"
 
 
 class Sprite
@@ -20,7 +21,8 @@ public:
 public:
 
    void Init(QGraphicsScene* scene,
-             PixmapStore*    store);
+             PixmapStore*    store,
+             MapView*        map);
 
    virtual bool Create(const double   x,
                        const double   y,
@@ -58,17 +60,11 @@ public:
 
 private:
 
-   void UpdateFrame(const uint32_t frame);
-
-   void UpdatePos(const double x,
-                  const double y);
-
-private:
-
    bool used_;
 
    QGraphicsScene* scene_;
    PixmapStore* store_;
+   MapView* map_;
 
    double timeInSec_;
 
@@ -92,6 +88,9 @@ private:
    double framesPerSec_;
    double secsPerFrame_;
    double gridPerSec_;
+
+   int32_t lastX_;
+   int32_t lastY_;
 
    QGraphicsPixmapItem* item_;
 };
