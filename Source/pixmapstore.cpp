@@ -98,6 +98,7 @@ QPixmap* PixmapStore::GetPixmap(const uint32_t i)
 
    if (i >= numPixmaps_)
    {
+      qDebug() << "PixmapStore::GetPixmap Killed us all";
       exit(EXIT_FAILURE);
    }
 

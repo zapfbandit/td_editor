@@ -74,10 +74,8 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::OpenLastMap()
+void MainWindow::MakeSpawns()
 {
-   DoOpenMap(settings_.MapPath());
-
    uint32_t numSpawns = ui->mapView_->NumSpawns();
 
    if (numSpawns > 0)
@@ -114,6 +112,11 @@ void MainWindow::OpenLastMap()
 
       spriteMgr_.Add(0.5, 0.5, 0, 1, 2, "Enemies", "Zombie - Big", 6, 2, 0.1);
    }
+}
+
+void MainWindow::OpenLastMap()
+{
+   DoOpenMap(settings_.MapPath());
 }
 
 
@@ -210,6 +213,8 @@ void MainWindow::DoOpenMap(const QString& mapPath)
 
 void MainWindow::SaveMap()
 {
+   MakeSpawns();
+
    if (mapPath_.isEmpty() == true)
    {
       SaveMapAs();

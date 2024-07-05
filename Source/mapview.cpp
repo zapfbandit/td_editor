@@ -90,6 +90,7 @@ uint32_t MapView::GetTile(const uint32_t x,
 uint32_t MapView::GetEgg(const uint32_t x,
                          const uint32_t y) const
 {
+   qDebug() << "MapView::GetEgg" << x << y << (width_ * y + x);
    return egg_[width_ * y + x];
 }
 
@@ -124,15 +125,15 @@ void MapView::Render()
          pen.setWidthF(0.025);
          line->setPen(pen);
          line->setZValue(-65);
+      }
 
-         for (uint32_t x = 0; x <= width_; ++x)
-         {
-            QGraphicsLineItem* line = scene_.addLine(TILE_SIZE * x, 0.0, TILE_SIZE * x, TILE_SIZE * height_);
-            QPen pen = line->pen();
-            pen.setWidthF(0.025);
-            line->setPen(pen);
-            line->setZValue(-65);
-         }
+      for (uint32_t x = 0; x <= width_; ++x)
+      {
+         QGraphicsLineItem* line = scene_.addLine(TILE_SIZE * x, 0.0, TILE_SIZE * x, TILE_SIZE * height_);
+         QPen pen = line->pen();
+         pen.setWidthF(0.025);
+         line->setPen(pen);
+         line->setZValue(-65);
       }
    }
 
@@ -206,6 +207,7 @@ bool MapView::OpenFile(const QString& path)
 //qDebug() << readStr;
       if (readStr != "Tiles")
       {
+         qDebug() << "MapView::OpenFile Killed us all";
          exit(EXIT_FAILURE);
       }
 
@@ -232,6 +234,7 @@ bool MapView::OpenFile(const QString& path)
 //qDebug() << readStr;
       if (readStr != "Map")
       {
+         qDebug() << "MapView::OpenFile Killed us all";
          exit(EXIT_FAILURE);
       }
 
@@ -289,6 +292,7 @@ for (uint32_t y = 0; y < height_; ++y)
 //qDebug() << readStr;
       if (readStr != "Spawns")
       {
+         qDebug() << "MapView::OpenFile Killed us all";
          exit(EXIT_FAILURE);
       }
 

@@ -70,7 +70,6 @@ bool Sprite::Create(const double   x,
    item_->setScale(scale / pixmap.width());
    item_->setPos(x, y);
 
-
    Tick(0.0);
 
    return true;
@@ -166,12 +165,13 @@ void Sprite::Tick(const double renderTimeInSec)
    {
       dist_ -= 1.0;
 
-      int32_t x = round(x_);
-      int32_t y = round(y_);
+      int32_t gx = round(x_);
+      int32_t gy = round(y_);
 
-qDebug() << "DoIt: " << x_ << y_ << x << y;
 
-      uint32_t lastTile = map_->GetTile(x, y) - 1;
+qDebug() << "DoIt: " << x_ << y_ << gx << gy;
+
+      uint32_t currEgg  = map_->GetEgg(gx, gy);
 
       struct Dir
       {
@@ -179,34 +179,38 @@ qDebug() << "DoIt: " << x_ << y_ << x << y;
          int32_t dy;
       };
 
-      uint32_t minDir = 4;
-      uint32_t minEgg = 999;
+      uint32_t matchDir = 4;
 
       const Dir dir[4] = {{ 0,-1},
                           { 1, 0},
                           { 0, 1},
                           {-1, 0}};
 
-      for (uint32_t testDir = 0; testDir < 4; ++testDir)
+      for (uint32_t testDir = 0; (matchDir == 4) && (testDir < 4); ++testDir)
       {
-         int32_t testX = x + dir[testDir].dx;
-         int32_t testY = y + dir[testDir].dy;
-
+         int32_t testX = gx + dir[testDir].dx;
+         int32_t testY = gy + dir[testDir].dy;
 
          if (map_->InBounds(testX, testY) == true)
          {
-            uint32_t testEgg  = map_->GetEgg(testX, testY);
+            uint32_t testEgg = map_->GetEgg(testX, testY);
 
-            if (testEgg < minEgg)
+            if (currEgg == testEgg + 1)
             {
-               minDir = testDir;
-               minEgg = testEgg;
+               matchDir = testDir;
             }
          }
       }
 
-      SetVel(dir[minDir].dx, dir[minDir].dy);
-
+      if (matchDir != 4)
+      {
+         SetVel(dir[matchDir].dx, dir[matchDir].dy);
+      }
+      else
+      {
+         used_ = false;
+         // Egg Health -= Baddy Heath
+      }
    }
 
    item_->setZValue(y_); // Use y value for z-sorting.

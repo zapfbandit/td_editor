@@ -54,6 +54,7 @@ Tile& TileStore::GetTile(uint32_t i)
 {
    if (i >= numTiles_)
    {
+      qDebug() << "TileStore::GetTile Killed us all";
       exit(EXIT_FAILURE);
    }
    
