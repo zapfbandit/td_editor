@@ -40,6 +40,7 @@ bool Sprite::Create(const double   x,
    used_ = true;
 
    frame_ = 0;
+   dist_ = 0.0;
 
    spriteType_ = spriteType;
    spriteName_ = spriteName;
@@ -62,9 +63,6 @@ bool Sprite::Create(const double   x,
 
    SetPos(x - 0.5 * scale,
           y - 0.5 * scale);
-
-   lastX_ = (int32_t)x;
-   lastY_ = (int32_t)y;
 
 //qDebug() << "Pos" << x << y;
 
@@ -154,26 +152,26 @@ void Sprite::Tick(const double renderTimeInSec)
    {
       x_ += dx_ * gridPerSec_ * renderTimeInSec;
       item_->setPos(x_, y_);
+      dist_ += gridPerSec_ * renderTimeInSec;
    }
 
    if (dy_ != 0.0)
    {
       y_ += dy_ * gridPerSec_ * renderTimeInSec;
       item_->setPos(x_, y_);
+      dist_ += gridPerSec_ * renderTimeInSec;
    }
 
-//qDebug() << x_ << y_;
-
-   int32_t x = (int32_t)floor(x_);
-   int32_t y = (int32_t)floor(y_);
-
-   if ((x != lastX_) || (y != lastY_))
+   if (dist_ >= 1.0)
    {
-qDebug() << x << y << map_;
-      lastX_ = x;
-      lastY_ = y;
+      dist_ -= 1.0;
 
-      //uint32_t lastTile = map_->GetTile(lastX_, lastY_) - 1;
+      int32_t x = round(x_);
+      int32_t y = round(y_);
+
+qDebug() << "DoIt: " << x_ << y_ << x << y;
+
+      uint32_t lastTile = map_->GetTile(x, y) - 1;
 
       struct Dir
       {
@@ -191,15 +189,12 @@ qDebug() << x << y << map_;
 
       for (uint32_t testDir = 0; testDir < 4; ++testDir)
       {
-         int32_t testX = lastX_ + dir[testDir].dx;
-         int32_t testY = lastY_ + dir[testDir].dy;
+         int32_t testX = x + dir[testDir].dx;
+         int32_t testY = y + dir[testDir].dy;
 
-qDebug() << testX << testY;
 
          if (map_->InBounds(testX, testY) == true)
          {
-qDebug() << "OK";
-
             uint32_t testEgg  = map_->GetEgg(testX, testY);
 
             if (testEgg < minEgg)

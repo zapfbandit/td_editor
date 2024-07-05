@@ -89,8 +89,7 @@ private:
    double secsPerFrame_;
    double gridPerSec_;
 
-   int32_t lastX_;
-   int32_t lastY_;
+   double dist_;
 
    QGraphicsPixmapItem* item_;
 };

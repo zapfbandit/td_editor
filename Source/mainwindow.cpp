@@ -93,7 +93,7 @@ void MainWindow::OpenLastMap()
 
          qDebug() << x << y << dx << dy;
 
-         for (uint32_t i = 0; i < 3; ++i)
+         for (uint32_t i = 0; i < 1; ++i)
          {
             double px = 0;
             double py = 0;
