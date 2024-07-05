@@ -72,7 +72,7 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
       for (uint32_t x = 0; x < width_; ++x)
       {
          map_[width_ * y + x] = 0;
-         egg_[width_ * y + x] = width * height;
+         egg_[width_ * y + x] = 999; // width * height;
       }
    }
 
@@ -90,7 +90,7 @@ uint32_t MapView::GetTile(const uint32_t x,
 uint32_t MapView::GetEgg(const uint32_t x,
                          const uint32_t y) const
 {
-   qDebug() << "MapView::GetEgg" << x << y << (width_ * y + x);
+//qDebug() << "MapView::GetEgg" << x << y << (width_ * y + x);
    return egg_[width_ * y + x];
 }
 
@@ -275,15 +275,15 @@ bool MapView::OpenFile(const QString& path)
 for (auto it: eggPos_)
 {
    qDebug() << "Egg" << it.x << it.y;
-   DoEggFlood(it.x, it.y, 10);
+   DoEggFlood(it.x, it.y, 100);
 }
 
 for (uint32_t y = 0; y < height_; ++y)
 {
-   QDebug deb = qDebug();
+   QDebug debug = qDebug();
    for (uint32_t x = 0; x < width_; ++x)
    {
-      deb << egg_[width_ * y + x] << " ";
+      debug << egg_[width_ * y + x] << " ";
    }
    //stream << "\r\n";
 }

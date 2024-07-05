@@ -168,48 +168,57 @@ void Sprite::Tick(const double renderTimeInSec)
       int32_t gx = round(x_);
       int32_t gy = round(y_);
 
-
 qDebug() << "DoIt: " << x_ << y_ << gx << gy;
-
-      uint32_t currEgg  = map_->GetEgg(gx, gy);
-
-      struct Dir
+      if (map_->InBounds(gx, gy) == false)
       {
-         int32_t dx;
-         int32_t dy;
-      };
-
-      uint32_t matchDir = 4;
-
-      const Dir dir[4] = {{ 0,-1},
-                          { 1, 0},
-                          { 0, 1},
-                          {-1, 0}};
-
-      for (uint32_t testDir = 0; (matchDir == 4) && (testDir < 4); ++testDir)
-      {
-         int32_t testX = gx + dir[testDir].dx;
-         int32_t testY = gy + dir[testDir].dy;
-
-         if (map_->InBounds(testX, testY) == true)
-         {
-            uint32_t testEgg = map_->GetEgg(testX, testY);
-
-            if (currEgg == testEgg + 1)
-            {
-               matchDir = testDir;
-            }
-         }
-      }
-
-      if (matchDir != 4)
-      {
-         SetVel(dir[matchDir].dx, dir[matchDir].dy);
+         // Something really really bad... maybe a counter
+         qDebug() << "BAD !!!";
       }
       else
       {
-         used_ = false;
-         // Egg Health -= Baddy Heath
+         uint32_t currEgg  = map_->GetEgg(gx, gy);
+
+         struct Dir
+         {
+            int32_t dx;
+            int32_t dy;
+         };
+
+         uint32_t matchDir = 4;
+
+         const Dir dir[4] = {{ 0,-1},
+                             { 1, 0},
+                             { 0, 1},
+                             {-1, 0}};
+
+         for (uint32_t testDir = 0; (matchDir == 4) && (testDir < 4); ++testDir)
+         {
+            int32_t testX = gx + dir[testDir].dx;
+            int32_t testY = gy + dir[testDir].dy;
+
+            if (map_->InBounds(testX, testY) == true)
+            {
+               uint32_t testEgg = map_->GetEgg(testX, testY);
+
+               if (currEgg == testEgg + 1)
+               {
+                  matchDir = testDir;
+               }
+            }
+         }
+
+         if (matchDir != 4)
+         {
+            SetVel(dir[matchDir].dx, dir[matchDir].dy);
+         }
+         else
+         {
+            // Clean up the sprit here... very important...
+
+            used_ = false;
+
+            // Egg Health -= Baddy Heath
+         }
       }
    }
 

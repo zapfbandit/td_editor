@@ -213,8 +213,6 @@ void MainWindow::DoOpenMap(const QString& mapPath)
 
 void MainWindow::SaveMap()
 {
-   MakeSpawns();
-
    if (mapPath_.isEmpty() == true)
    {
       SaveMapAs();
@@ -231,6 +229,8 @@ void MainWindow::SaveMap()
          qDebug() << "An error occured while saving a map.";
       }
    }
+
+   MakeSpawns();
 }
 
 
