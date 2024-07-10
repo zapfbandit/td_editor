@@ -9,6 +9,7 @@
 #include "pixmapStore.h"
 #include "mapview.h"
 
+class SpriteMgr;
 
 class Sprite
 {
@@ -20,7 +21,8 @@ public:
 
 public:
 
-   void Init(QGraphicsScene* scene,
+   void Init(SpriteMgr*      mgr,
+             QGraphicsScene* scene,
              PixmapStore*    store,
              MapView*        map);
 
@@ -52,16 +54,11 @@ public:
 
 public:
 
-   bool Used() const;
-
-public:
-
    virtual void Tick(const double renderTimeInSec);
 
 private:
 
-   bool used_;
-
+   SpriteMgr* mgr_;
    QGraphicsScene* scene_;
    PixmapStore* store_;
    MapView* map_;

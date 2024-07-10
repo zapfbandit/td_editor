@@ -1,11 +1,12 @@
 #include "sprite.h"
 
 #include <QGraphicsScene>
+
+#include "spritemgr.h"
 #include "pixmapstore.h"
 
 
 Sprite::Sprite():
-   used_(false),
    item_(nullptr)
 {}
 
@@ -15,10 +16,12 @@ Sprite::~Sprite()
 
 
 
-void Sprite::Init(QGraphicsScene* scene,
+void Sprite::Init(SpriteMgr*      mgr,
+                  QGraphicsScene* scene,
                   PixmapStore*    store,
                   MapView*        map)
 {
+   mgr_ = mgr;
    scene_ = scene;
    store_ = store;
    map_   = map;
@@ -37,8 +40,6 @@ bool Sprite::Create(const double   x,
                     const double   framesPerSec,
                     const double   gridPerSec)
 {
-   used_ = true;
-
    frame_ = 0;
    dist_ = 0.0;
 
@@ -120,12 +121,6 @@ void Sprite::SetVel(const double dx,
 }
 
 
-bool Sprite::Used() const
-{
-   return used_;
-}
-
-
 void Sprite::Tick(const double renderTimeInSec)
 {
 //qDebug() << QString("Sprite::Tick(renderTimeInSec = %0)").arg(renderTimeInSec);
@@ -169,6 +164,7 @@ void Sprite::Tick(const double renderTimeInSec)
       int32_t gy = round(y_);
 
 qDebug() << "DoIt: " << x_ << y_ << gx << gy;
+
       if (map_->InBounds(gx, gy) == false)
       {
          // Something really really bad... maybe a counter
@@ -213,9 +209,10 @@ qDebug() << "DoIt: " << x_ << y_ << gx << gy;
          }
          else
          {
-            // Clean up the sprit here... very important...
+            // Clean up the sprite here... very important...
 
-            used_ = false;
+            mgr_->FreeSprite(this);
+            delete item_;
 
             // Egg Health -= Baddy Heath
          }

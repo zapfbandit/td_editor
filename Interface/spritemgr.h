@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include <map>
+#include <list>
 
 #include <QString>
 
@@ -56,10 +57,17 @@ public:
 
    SpriteData* GetIndex(const QString& spritePath);
 
+   uint32_t NumSprites() const;
+
+   void FreeSprite(Sprite* sprite);
+
 private:
 
    const uint32_t maxSprites_;
    Sprite* sprites_;
 
    std::map<QString, SpriteData> spriteIndexMap_;
+
+   std::list<Sprite*> freeSprites_;
+   std::list<Sprite*> usedSprites_;
 };

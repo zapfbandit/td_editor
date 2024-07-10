@@ -23,6 +23,8 @@ SpriteMgr::~SpriteMgr()
 {
 qDebug() << "SpriteMgr::It's a killin' time...";
 
+   freeSprites_.clear();
+   usedSprites_.clear();
    delete [] sprites_;
 }
 
@@ -35,7 +37,8 @@ qDebug() << "SpriteMgr::Init(...)";
 
    for (uint32_t i = 0; i < maxSprites_; ++i)
    {
-      sprites_[i].Init(scene, store, map);
+      sprites_[i].Init(this, scene, store, map);
+      freeSprites_.push_back(&sprites_[i]);
    }
 }
 
@@ -54,15 +57,17 @@ uint32_t SpriteMgr::Add(const double   x,
 {
 qDebug() << "SpriteMgr::Add(...)";
 
-   for (uint32_t i = 0; i < maxSprites_; ++i)
+   if (freeSprites_.size() > 0)
    {
-      if (sprites_[i].Used() == false)
-      {
-         sprites_[i].Create(x, y, dx, dy, scale,
-                            spriteType, spriteName, numFrames, framesPerSec, gridPerSec);
+      Sprite* newSprite = freeSprites_.back();
+      freeSprites_.pop_back();
 
-         return true;
-      }
+      newSprite->Create(x, y, dx, dy, scale,
+                         spriteType, spriteName, numFrames, framesPerSec, gridPerSec);
+
+      usedSprites_.push_back(newSprite);
+
+      return true;
    }
 
    return false;
@@ -73,12 +78,9 @@ void SpriteMgr::Tick(const double renderTimeInS)
 {
 //qDebug() << QString("SpriteMgr::Tick(renderTimeInS = %0)").arg(renderTimeInS);
 
-   for (uint32_t i = 0; i < maxSprites_; ++i)
+   for (Sprite* sprite: usedSprites_)
    {
-      if (sprites_[i].Used() == true)
-      {
-         sprites_[i].Tick(renderTimeInS);
-      }
+      sprite->Tick(renderTimeInS);
    }
 }
 
@@ -111,4 +113,17 @@ qDebug() << QString("SpriteMgr::GetIndex(spritePath = %0)").arg(spritePath);
    {
       return nullptr;
    }
+}
+
+
+uint32_t SpriteMgr::NumSprites() const
+{
+   return usedSprites_.size();
+}
+
+
+void SpriteMgr::FreeSprite(Sprite* sprite)
+{
+   usedSprites_.remove(sprite);
+   freeSprites_.push_front(sprite);
 }

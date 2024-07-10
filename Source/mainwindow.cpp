@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent):
    ui(new Ui::MainWindow),
    tileStore_(settings_.TilesPath()),
    pixmapStore_(settings_.SpritesPath()),
-   spriteMgr_(1024),
+   spriteMgr_(4),
    dirty_(false),
    game_(spriteMgr_)
 {
@@ -123,6 +123,8 @@ void MainWindow::OpenLastMap()
 void MainWindow::Tick()
 {
    game_.Tick();
+
+   ui->statusbar->showMessage(QString("Sprites = %0").arg(spriteMgr_.NumSprites()));
 
    QTimer::singleShot(100, this, &MainWindow::Tick);
 }
