@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent):
    ui(new Ui::MainWindow),
    tileStore_(settings_.TilesPath()),
    pixmapStore_(settings_.SpritesPath()),
-   spriteMgr_(4),
+   spriteMgr_(1024),
    dirty_(false),
    game_(spriteMgr_)
 {
