@@ -27,6 +27,7 @@ MapView::~MapView()
 {
    delete [] map_;
    delete [] egg_;
+   delete grid_;
 }
 
 
@@ -76,6 +77,29 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
       }
    }
 
+   grid_ = new QGraphicsItemGroup;
+
+   for (uint32_t y = 0; y <= height_; ++y)
+   {
+      QGraphicsLineItem* line = scene_.addLine(0.0, TILE_SIZE * y, TILE_SIZE * width_, TILE_SIZE * y);
+      QPen pen = line->pen();
+      pen.setWidthF(0.025);
+      line->setPen(pen);
+      grid_->addToGroup(line);
+   }
+
+   for (uint32_t x = 0; x <= width_; ++x)
+   {
+      QGraphicsLineItem* line = scene_.addLine(TILE_SIZE * x, 0.0, TILE_SIZE * x, TILE_SIZE * height_);
+      QPen pen = line->pen();
+      pen.setWidthF(0.025);
+      line->setPen(pen);
+      grid_->addToGroup(line);
+   }
+
+   grid_->setZValue(-65);
+   scene_.addItem(grid_);
+
    Render();
 }
 
@@ -103,38 +127,17 @@ bool MapView::InBounds(const int32_t x,
 
 void MapView::Render()
 {
-   //scene_.clear();
-
-//qDebug() << width_ << "," << height_;
-
    for (uint32_t y = 0; y < height_; ++y)
    {
       for (uint32_t x = 0; x < width_; ++x)
       {
-//qDebug() << x << "," << y;
          tileStore_->GetTile(map_[width_ * y + x]).Render(scene_, TILE_SIZE * x, TILE_SIZE * y, TILE_SIZE);
       }
    }
 
-   if (showGrid_ == true)
+   if (grid_ != nullptr)
    {
-      for (uint32_t y = 0; y <= height_; ++y)
-      {
-         QGraphicsLineItem* line = scene_.addLine(0.0, TILE_SIZE * y, TILE_SIZE * width_, TILE_SIZE * y);
-         QPen pen = line->pen();
-         pen.setWidthF(0.025);
-         line->setPen(pen);
-         line->setZValue(-65);
-      }
-
-      for (uint32_t x = 0; x <= width_; ++x)
-      {
-         QGraphicsLineItem* line = scene_.addLine(TILE_SIZE * x, 0.0, TILE_SIZE * x, TILE_SIZE * height_);
-         QPen pen = line->pen();
-         pen.setWidthF(0.025);
-         line->setPen(pen);
-         line->setZValue(-65);
-      }
+      grid_->setVisible(showGrid_);
    }
 
    resizeEvent(nullptr);
