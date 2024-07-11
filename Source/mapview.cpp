@@ -306,16 +306,17 @@ for (uint32_t y = 0; y < height_; ++y)
 
       for (uint32_t i = 0; i < numSpawns; ++i)
       {
-         double index, x, y;
+         uint32_t index;
+         double x, y;
          double dx, dy;
          stream >> index >> x >> y >> dx >> dy;
-         spawns_.push_back({x, y, dx, dy});
+         spawns_.push_back({index, x, y, dx, dy});
       }
 
       uint32_t i = 0;
       for (auto it: spawns_)
       {
-qDebug() << i++ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  ")";
+qDebug() << it.index_ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  ")";
       }
 
       file.close();
@@ -360,10 +361,10 @@ void MapView::DoEggFlood(const uint32_t x,
 
    uint32_t tileId = map_[width_ * y + x] - 1;
 
-   if ((y >= 1)          && ((tileId & 0x1) == 0) && (((map_[width_ * (y - 1) + (x + 0)] - 1) & 0x4) == 0) && (egg_[(y - 1) * width_ + x] > dist)) DoEggFlood(x,     y - 1, dist + 1);
-   if ((x < width_ - 1)  && ((tileId & 0x2) == 0) && (((map_[width_ * (y + 0) + (x + 1)] - 1) & 0x8) == 0) && (egg_[y * width_ + (x + 1)] > dist)) DoEggFlood(x + 1, y,     dist + 1);
-   if ((y < height_ - 1) && ((tileId & 0x4) == 0) && (((map_[width_ * (y + 1) + (x + 0)] - 1) & 0x1) == 0) && (egg_[(y + 1) * width_ + x] > dist)) DoEggFlood(x,     y + 1, dist + 1);
-   if ((x >= 1)          && ((tileId & 0x8) == 0) && (((map_[width_ * (y + 0) + (x - 1)] - 1) & 0x2) == 0) && (egg_[y * width_ + (x - 1)] > dist)) DoEggFlood(x - 1, y,     dist + 1);
+   if ((y >= 1)          && ((tileId & 0x1) == 0) && (((map_[width_ * (y - 1) + (x + 0)] - 1) & 0x4) == 0) && (egg_[(y - 1) * width_ + (x + 0)] > dist)) DoEggFlood(x + 0, y - 1, dist + 1);
+   if ((x < width_ - 1)  && ((tileId & 0x2) == 0) && (((map_[width_ * (y + 0) + (x + 1)] - 1) & 0x8) == 0) && (egg_[(y + 0) * width_ + (x + 1)] > dist)) DoEggFlood(x + 1, y + 0, dist + 1);
+   if ((y < height_ - 1) && ((tileId & 0x4) == 0) && (((map_[width_ * (y + 1) + (x + 0)] - 1) & 0x1) == 0) && (egg_[(y + 1) * width_ + (x + 0)] > dist)) DoEggFlood(x + 0, y + 1, dist + 1);
+   if ((x >= 1)          && ((tileId & 0x8) == 0) && (((map_[width_ * (y + 0) + (x - 1)] - 1) & 0x2) == 0) && (egg_[(y + 0) * width_ + (x - 1)] > dist)) DoEggFlood(x - 1, y + 0, dist + 1);
 }
 
 
@@ -418,43 +419,36 @@ bool MapView::SaveToFile(const QString& path)
       stream << qSetFieldWidth(4) << Qt::right;
 
       spawns_.clear();
+      uint32_t index = 0;
       uint32_t tileId = 0;
 
       for (uint32_t y = 0; y < height_; ++y)
       {
-         tileId = map_[width_ * y + 0] - 1;
-         if ((tileId != 0) &&
-             ((tileId & 0x8) == 0))
+         tileId = map_[width_ * (y + 0) + (0)] - 1;
+         if ((tileId != 0) && ((tileId & 0x8) == 0))
          {
-//qDebug() << "Left" << tileId << 0 << y;
-            spawns_.push_back({(double)0, (double)y, (double)-1, (double)0});
+            spawns_.push_back({index++, 0, (double)y, -1, 0});
          }
 
-         tileId = map_[width_ * y + width_ - 1] - 1;
-         if ((tileId != 0) &&
-             ((tileId & 0x2) == 0))
+         tileId = map_[width_ * (y + 0) + (width_ - 1)] - 1;
+         if ((tileId != 0) && ((tileId & 0x2) == 0))
          {
-//qDebug() << "Right" << tileId << width_ - 1 << y;
-            spawns_.push_back({(double)(width_ - 1), (double)y, (double)1, (double)0});
+            spawns_.push_back({index++, (double)(width_ - 1), (double)y, 1, 0});
          }
       }
 
       for (uint32_t x = 0; x < width_; ++x)
       {
          tileId = map_[width_ * (0) + x] - 1;
-         if ((tileId != 0) &&
-             ((tileId & 0x1) == 0))
+         if ((tileId != 0) && ((tileId & 0x1) == 0))
          {
-//qDebug() << "Up" << tileId << x << 0;
-            spawns_.push_back({(double)x, (double)0, (double)0, (double)-1});
+            spawns_.push_back({index++, (double)x, 0, 0, -1});
          }
 
          tileId = map_[width_ * (height_ - 1) + x] - 1;
-         if ((tileId != 0) &&
-             ((tileId & 0x4) == 0))
+         if ((tileId != 0) && ((tileId & 0x4) == 0))
          {
-//qDebug() << "Down" << tileId << x << height_ - 1;
-            spawns_.push_back({(double)x, (double)(height_ - 1), (double)0, (double)1});
+            spawns_.push_back({index++, (double)x, (double)(height_ - 1), 0, 1});
          }
       }
 
@@ -463,7 +457,7 @@ bool MapView::SaveToFile(const QString& path)
       uint32_t i = 0;
       for (auto it: spawns_)
       {
-         stream << i++ << it.x_ << it.y_ << it.dx_ << it.dy_ << "\r\n";
+         stream << it.index_ << it.x_ << it.y_ << it.dx_ << it.dy_ << "\r\n";
       }
 
       file.close();

@@ -22,6 +22,7 @@ public:
 
    struct Spawn
    {
+      uint32_t index_;
       double x_;
       double y_;
       double dx_;
