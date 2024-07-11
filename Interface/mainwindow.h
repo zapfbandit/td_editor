@@ -62,7 +62,6 @@ private:
    SpriteMgr spriteMgr_;
 
    QString mapPath_;
-   bool dirty_;
 
    Game game_;
 
@@ -76,4 +75,6 @@ private:
 
    std::vector<UndoEntry> undoStack_;
    std::vector<UndoEntry> redoStack_;
+
+   uint32_t saveUndoCount_;
 };

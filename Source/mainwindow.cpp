@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent):
    tileStore_(settings_.TilesPath()),
    pixmapStore_(settings_.SpritesPath()),
    spriteMgr_(1024),
-   dirty_(false),
+   saveUndoCount_(0),
    game_(spriteMgr_)
 {
    ui->setupUi(this);
@@ -117,11 +117,12 @@ void MainWindow::MakeSpawns()
    }
    else
    {
-      spriteMgr_.Add(0.5, 0.5, 1, 0, 1, "Enemies", "Zombie", 6, 2, 0.1);
+      //spriteMgr_.Add(0.5, 0.5, 1, 0, 1, "Enemies", "Zombie", 6, 2, 0.1);
 
-      spriteMgr_.Add(0.5, 0.5, 0, 1, 2, "Enemies", "Zombie - Big", 6, 2, 0.1);
+      //spriteMgr_.Add(0.5, 0.5, 0, 1, 2, "Enemies", "Zombie - Big", 6, 2, 0.1);
    }
 }
+
 
 void MainWindow::OpenLastMap()
 {
@@ -141,7 +142,7 @@ void MainWindow::Tick()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (dirty_ == true)
+    if (undoStack_.size() != saveUndoCount_)
     {
         QMessageBox::StandardButton resBtn = QMessageBox::question(this,
             tr("TD Editor"),
@@ -309,13 +310,13 @@ void MainWindow::MakeChange(uint32_t x, uint32_t y, uint32_t oldTile, uint32_t n
 {
    undoStack_.push_back({x, y, oldTile, newTile});
 
-   MakeDirty();
+   RedrawTitle();
 }
 
 
 void MainWindow::MakeDirty()
 {
-    dirty_ = true;
+    saveUndoCount_ = UINT32_MAX;
 
     RedrawTitle();
 }
@@ -323,7 +324,7 @@ void MainWindow::MakeDirty()
 
 void MainWindow::MakeClean()
 {
-    dirty_ = false;
+    saveUndoCount_ = undoStack_.size();
 
     RedrawTitle();
 }
@@ -338,7 +339,7 @@ void MainWindow::RedrawTitle()
         windowTitle += " - " + QFileInfo(mapPath_).fileName();
     }
 
-    if (dirty_ == true)
+    if (undoStack_.size() != saveUndoCount_)
     {
         windowTitle += " *";
     }
