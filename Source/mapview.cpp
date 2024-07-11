@@ -59,6 +59,8 @@ void MapView::SetSelectedView(SelectedView* selectedView)
 
 void MapView::SetSize(const uint32_t width, const uint32_t height)
 {
+   scene_.clear();
+
    width_  = width;
    height_ = height;
 
@@ -77,6 +79,9 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
       }
    }
 
+   //Hmmmm, leaky leaky...
+   //scene_.removeItem(grid_);
+   //delete grid_;
    grid_ = new QGraphicsItemGroup;
 
    for (uint32_t y = 0; y <= height_; ++y)
