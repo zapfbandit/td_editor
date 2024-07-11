@@ -160,22 +160,22 @@ void MapView::mousePressEvent(QMouseEvent* event)
 
    uint32_t x = static_cast<uint32_t>(sceneClick.x() / TILE_SIZE);
    uint32_t y = static_cast<uint32_t>(sceneClick.y() / TILE_SIZE);
+   uint32_t oldTile = map_[width_ * y + x];
+   uint32_t newTile = 0;
 
    if (event->button() == Qt::LeftButton)
    {
-       map_[width_ * y + x] = selectedView_->GetSelected();
+       newTile = selectedView_->GetSelected();
    }
    else
    {
       selectedView_->SetSelected(map_[width_ * y + x]);
-      map_[width_ * y + x] = 0;
+      newTile = 0;
    }
-   
-//qDebug() << x << "," << y << " <- " << map_[width_ * y + x];
 
-   Render();
+   DoChange(x, y, newTile);
 
-   emit Changed();
+   emit Changed(x, y, oldTile, newTile);
 
    QGraphicsView::mousePressEvent(event);
 }
@@ -342,7 +342,7 @@ qDebug() << i++ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  ")";
             indexWarningMsgBox.exec();
          }
 
-         emit Changed();
+         emit Touched();
       }
 
       return true;
@@ -474,4 +474,14 @@ bool MapView::SaveToFile(const QString& path)
    }
 
    return false;
+}
+
+
+void MapView::DoChange(const uint32_t x,
+                       const uint32_t y,
+                       const uint32_t tile)
+{
+   map_[width_ * y + x] = tile;
+
+   Render();
 }

@@ -57,14 +57,19 @@ public:
                    const uint32_t y,
                    const uint32_t dist);
 
+   void DoChange(const uint32_t x,
+                 const uint32_t y,
+                 const uint32_t tile);
+
 signals:
-   void Changed();
+   void Touched();
+   void Changed(uint32_t x, uint32_t y, uint32_t oldTile, uint32_t newTile);
 
 protected:
 
    virtual void resizeEvent(QResizeEvent *event) override;
    virtual void mousePressEvent(QMouseEvent *event) override;
-   
+
 private:
 
    QGraphicsScene scene_;

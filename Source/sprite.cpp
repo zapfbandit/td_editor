@@ -211,9 +211,11 @@ qDebug() << "DoIt: " << x_ << y_ << gx << gy;
          {
             // Clean up the sprite here... very important...
 
-            mgr_->FreeSprite(this);
+qDebug() << "Killing sprite...";
+
             scene_->removeItem(item_);
             delete item_;
+            mgr_->FreeSprite(this);
 
             // Egg Health -= Baddy Heath
          }

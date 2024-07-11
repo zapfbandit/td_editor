@@ -35,6 +35,10 @@ public slots:
    void SaveMap();
    void SaveMapAs();
 
+   void Undo();
+   void Redo();
+
+   void MakeChange(uint32_t x, uint32_t y, uint32_t oldTile, uint32_t newTile);
    void MakeDirty();
    void MakeClean();
 
@@ -61,4 +65,15 @@ private:
    bool dirty_;
 
    Game game_;
+
+   struct UndoEntry
+   {
+      uint32_t x_;
+      uint32_t y_;
+      uint32_t oldTile_;
+      uint32_t newTile_;
+   };
+
+   std::vector<UndoEntry> undoStack_;
+   std::vector<UndoEntry> redoStack_;
 };

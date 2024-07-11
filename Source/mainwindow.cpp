@@ -32,11 +32,11 @@ MainWindow::MainWindow(QWidget *parent):
    ui->actionSave_->setDisabled(true);
    ui->actionSaveAs_->setDisabled(true);
 
-   connect(ui->mapView_, &MapView::Changed,
+   connect(ui->mapView_, &MapView::Touched,
            this,         &MainWindow::MakeDirty);
-   
-   connect(ui->actionShowGrid_, &QAction::triggered,
-           this,                &MainWindow::ShowGrid);
+
+   connect(ui->mapView_, &MapView::Changed,
+           this,         &MainWindow::MakeChange);
 
    connect(ui->actionNew_, &QAction::triggered,
            this,           &MainWindow::NewMap);
@@ -49,6 +49,15 @@ MainWindow::MainWindow(QWidget *parent):
 
    connect(ui->actionSaveAs_, &QAction::triggered,
            this,              &MainWindow::SaveMapAs);
+
+   connect(ui->actionUndo_, &QAction::triggered,
+           this,            &MainWindow::Undo);
+
+   connect(ui->actionRedo_, &QAction::triggered,
+           this,            &MainWindow::Redo);
+
+   connect(ui->actionShowGrid_, &QAction::triggered,
+           this,                &MainWindow::ShowGrid);
 
    const bool showGrid = settings_.ShowGrid();
    ui->actionShowGrid_->setChecked(showGrid);
@@ -232,6 +241,7 @@ void MainWindow::SaveMap()
       }
    }
 
+   OpenLastMap();
    MakeSpawns();
 }
 
@@ -261,11 +271,45 @@ void MainWindow::SaveMapAs()
 }
 
 
+void MainWindow::Undo()
+{
+   UndoEntry entry = undoStack_.back();
+   undoStack_.pop_back();
+
+   ui->mapView_->DoChange(entry.x_, entry.y_, entry.oldTile_);
+
+   redoStack_.push_back(entry);
+
+   RedrawTitle();
+}
+
+
+void MainWindow::Redo()
+{
+   UndoEntry entry = redoStack_.back();
+   redoStack_.pop_back();
+
+   ui->mapView_->DoChange(entry.x_, entry.y_, entry.newTile_);
+
+   undoStack_.push_back(entry);
+
+   RedrawTitle();
+}
+
+
 void MainWindow::SetMapPath(const QString& mapPath)
 {
    mapPath_ = mapPath;
 
    RedrawTitle();
+}
+
+
+void MainWindow::MakeChange(uint32_t x, uint32_t y, uint32_t oldTile, uint32_t newTile)
+{
+   undoStack_.push_back({x, y, oldTile, newTile});
+
+   MakeDirty();
 }
 
 
@@ -303,4 +347,7 @@ void MainWindow::RedrawTitle()
 
     ui->actionSave_->setDisabled(false);
     ui->actionSaveAs_->setDisabled(false);
+
+    ui->actionUndo_->setDisabled(undoStack_.size() == 0);
+    ui->actionRedo_->setDisabled(redoStack_.size() == 0);
 }
