@@ -360,12 +360,10 @@ void MapView::DoEggFlood(const uint32_t x,
 
    uint32_t tileId = map_[width_ * y + x] - 1;
 
-   qDebug() << x << y << dist << tileId;
-
-   if ((y >= 1)          && ((tileId & 0x1) == 0) && (egg_[(y - 1) * width_ + x] > dist)) DoEggFlood(x,     y - 1, dist + 1);
-   if ((x < width_ - 1)  && ((tileId & 0x2) == 0) && (egg_[y * width_ + (x + 1)] > dist)) DoEggFlood(x + 1, y,     dist + 1);
-   if ((y < height_ - 1) && ((tileId & 0x4) == 0) && (egg_[(y + 1) * width_ + x] > dist)) DoEggFlood(x,     y + 1, dist + 1);
-   if ((x >= 1)          && ((tileId & 0x8) == 0) && (egg_[y * width_ + (x - 1)] > dist)) DoEggFlood(x - 1, y,     dist + 1);
+   if ((y >= 1)          && ((tileId & 0x1) == 0) && (((map_[width_ * (y - 1) + (x + 0)] - 1) & 0x4) == 0) && (egg_[(y - 1) * width_ + x] > dist)) DoEggFlood(x,     y - 1, dist + 1);
+   if ((x < width_ - 1)  && ((tileId & 0x2) == 0) && (((map_[width_ * (y + 0) + (x + 1)] - 1) & 0x8) == 0) && (egg_[y * width_ + (x + 1)] > dist)) DoEggFlood(x + 1, y,     dist + 1);
+   if ((y < height_ - 1) && ((tileId & 0x4) == 0) && (((map_[width_ * (y + 1) + (x + 0)] - 1) & 0x1) == 0) && (egg_[(y + 1) * width_ + x] > dist)) DoEggFlood(x,     y + 1, dist + 1);
+   if ((x >= 1)          && ((tileId & 0x8) == 0) && (((map_[width_ * (y + 0) + (x - 1)] - 1) & 0x2) == 0) && (egg_[y * width_ + (x - 1)] > dist)) DoEggFlood(x - 1, y,     dist + 1);
 }
 
 

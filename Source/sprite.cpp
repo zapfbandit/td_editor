@@ -172,20 +172,23 @@ qDebug() << "DoIt: " << x_ << y_ << gx << gy;
       }
       else
       {
-         uint32_t currEgg  = map_->GetEgg(gx, gy);
+         uint32_t currTile = map_->GetTile(gx, gy);
+         uint32_t currEgg  = map_->GetEgg (gx, gy);
 
          struct Dir
          {
             int32_t dx;
             int32_t dy;
+            int32_t out;
+            int32_t in;
          };
 
          uint32_t matchDir = 4;
 
-         const Dir dir[4] = {{ 0,-1},
-                             { 1, 0},
-                             { 0, 1},
-                             {-1, 0}};
+         const Dir dir[4] = {{ 0,-1, 1, 4},
+                             { 1, 0, 2, 8},
+                             { 0, 1, 4, 1},
+                             {-1, 0, 8, 2}};
 
          for (uint32_t testDir = 0; (matchDir == 4) && (testDir < 4); ++testDir)
          {
@@ -194,9 +197,12 @@ qDebug() << "DoIt: " << x_ << y_ << gx << gy;
 
             if (map_->InBounds(testX, testY) == true)
             {
-               uint32_t testEgg = map_->GetEgg(testX, testY);
+               uint32_t testTile = map_->GetTile(testX, testY);
+               uint32_t testEgg  = map_->GetEgg (testX, testY);
 
-               if (currEgg == testEgg + 1)
+               if ((((currTile - 1) & dir[testDir].out) == 0) &&
+                   (((testTile - 1) & dir[testDir].in)  == 0) &&
+                   (currEgg == testEgg + 1))
                {
                   matchDir = testDir;
                }
@@ -209,9 +215,7 @@ qDebug() << "DoIt: " << x_ << y_ << gx << gy;
          }
          else
          {
-            // Clean up the sprite here... very important...
-
-qDebug() << "Killing sprite...";
+qDebug() << "Killing sprite... " << scene_ << item_ << mgr_;
 
             scene_->removeItem(item_);
             delete item_;
