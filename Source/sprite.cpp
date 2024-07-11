@@ -77,6 +77,14 @@ bool Sprite::Create(const double   x,
 }
 
 
+bool Sprite::Destroy()
+{
+   qDebug() << "Destroy";
+   //scene_->removeItem(item_);
+   return true;
+}
+
+
 void Sprite::SetPos(const double x,
                     const double y)
 {
@@ -215,11 +223,9 @@ qDebug() << "DoIt: " << x_ << y_ << gx << gy;
          }
          else
          {
-qDebug() << "Killing sprite... " << scene_ << item_ << mgr_;
+qDebug() << "Killing sprite...";
 
-            scene_->removeItem(item_);
-            delete item_;
-            mgr_->FreeSprite(this);
+            mgr_->MarkForDeath(this);
 
             // Egg Health -= Baddy Heath
          }

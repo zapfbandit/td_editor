@@ -88,7 +88,7 @@ private:
    uint32_t* egg_;
 
    bool showGrid_;
-   QGraphicsItemGroup* grid_;
+   //QGraphicsItemGroup* grid_;
 
    std::vector<Spawn> spawns_;
 

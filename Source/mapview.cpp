@@ -17,7 +17,8 @@ MapView::MapView(QWidget* parent):
    height_(0),
    map_(nullptr),
    egg_(nullptr),
-   showGrid_(true)
+   showGrid_(true)//,
+   //grid_(nullptr)
 {
    setScene(&scene_);
 }
@@ -27,7 +28,7 @@ MapView::~MapView()
 {
    delete [] map_;
    delete [] egg_;
-   delete grid_;
+   //delete grid_;
 }
 
 
@@ -59,7 +60,7 @@ void MapView::SetSelectedView(SelectedView* selectedView)
 
 void MapView::SetSize(const uint32_t width, const uint32_t height)
 {
-   scene_.clear();
+   scene_.clear(); // This will delete grid_ as the scene now owns it.
 
    width_  = width;
    height_ = height;
@@ -79,7 +80,7 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
       }
    }
 
-   grid_ = new QGraphicsItemGroup;
+   /*grid_ = new QGraphicsItemGroup;
 
    for (uint32_t y = 0; y <= height_; ++y)
    {
@@ -100,7 +101,7 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
    }
 
    grid_->setZValue(-65);
-   scene_.addItem(grid_);
+   scene_.addItem(grid_);*/
 
    Render();
 }
@@ -137,10 +138,12 @@ void MapView::Render()
       }
    }
 
+   /*
    if (grid_ != nullptr)
    {
       grid_->setVisible(showGrid_);
    }
+*/
 
    resizeEvent(nullptr);
 }
@@ -150,7 +153,7 @@ void MapView::resizeEvent(QResizeEvent *event)
 {
    QRectF sceneRect(0.0, 0.0, TILE_SIZE * width_, TILE_SIZE * height_);
 
-   fitInView(sceneRect, Qt::KeepAspectRatio);
+   fitInView(sceneRect);//, Qt::KeepAspectRatio);
    
    QGraphicsView::resizeEvent(event);
 }
@@ -363,6 +366,7 @@ void MapView::DoEggFlood(const uint32_t x,
 
    uint32_t tileId = map_[width_ * y + x] - 1;
 
+ //It's in the map,      The outwards path directiom      The direction of the destination tile matches         It's score would be lower (aka better)   Flood the map in this direction
    if ((y >= 1)          && ((tileId & 0x1) == 0) && (((map_[width_ * (y - 1) + (x + 0)] - 1) & 0x4) == 0) && (egg_[(y - 1) * width_ + (x + 0)] > dist)) DoEggFlood(x + 0, y - 1, dist + 1);
    if ((x < width_ - 1)  && ((tileId & 0x2) == 0) && (((map_[width_ * (y + 0) + (x + 1)] - 1) & 0x8) == 0) && (egg_[(y + 0) * width_ + (x + 1)] > dist)) DoEggFlood(x + 1, y + 0, dist + 1);
    if ((y < height_ - 1) && ((tileId & 0x4) == 0) && (((map_[width_ * (y + 1) + (x + 0)] - 1) & 0x1) == 0) && (egg_[(y + 1) * width_ + (x + 0)] > dist)) DoEggFlood(x + 0, y + 1, dist + 1);

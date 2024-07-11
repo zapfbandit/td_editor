@@ -59,6 +59,7 @@ public:
 
    uint32_t NumSprites() const;
 
+   void MarkForDeath(Sprite* sprite);
    void FreeSprite(Sprite* sprite);
 
 private:
@@ -70,4 +71,6 @@ private:
 
    std::list<Sprite*> freeSprites_;
    std::list<Sprite*> usedSprites_;
+
+   std::vector<Sprite*> deadSprites_;
 };

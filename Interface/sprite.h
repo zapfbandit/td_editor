@@ -44,6 +44,8 @@ public:
                const double   framesPerSec,
                const double   gridPerSec);
 
+   bool Destroy();
+
 public:
 
    void SetPos(const double x,

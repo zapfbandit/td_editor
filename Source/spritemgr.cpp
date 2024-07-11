@@ -82,6 +82,12 @@ void SpriteMgr::Tick(const double renderTimeInS)
    {
       sprite->Tick(renderTimeInS);
    }
+
+   for (Sprite* sprite: deadSprites_)
+   {
+      //sprite->Destroy();
+      FreeSprite(sprite);
+   }
 }
 
 
@@ -119,6 +125,12 @@ qDebug() << QString("SpriteMgr::GetIndex(spritePath = %0)").arg(spritePath);
 uint32_t SpriteMgr::NumSprites() const
 {
    return usedSprites_.size();
+}
+
+
+void SpriteMgr::MarkForDeath(Sprite* sprite)
+{
+   deadSprites_.push_back(sprite);
 }
 
 
