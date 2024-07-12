@@ -17,8 +17,8 @@ MapView::MapView(QWidget* parent):
    height_(0),
    map_(nullptr),
    egg_(nullptr),
-   showGrid_(true)//,
-   //grid_(nullptr)
+   showGrid_(true),
+   gridGroup_(nullptr)
 {
    setScene(&scene_);
 }
@@ -28,7 +28,7 @@ MapView::~MapView()
 {
    delete [] map_;
    delete [] egg_;
-   //delete grid_;
+   delete gridGroup_;
 }
 
 
@@ -60,16 +60,47 @@ void MapView::SetSelectedView(SelectedView* selectedView)
 
 void MapView::SetSize(const uint32_t width, const uint32_t height)
 {
-   scene_.clear(); // This will delete grid_ as the scene now owns it.
+   qDebug() << "MapView::SetSize";
 
-   width_  = width;
-   height_ = height;
+   if ((width_ != width) ||
+       (height_ != height))
+   {
+      width_  = width;
+      height_ = height;
 
-   delete [] map_;
-   delete [] egg_;
+      delete [] map_;
+      delete [] egg_;
 
-   map_ = new uint32_t[width * height];
-   egg_ = new uint32_t[width * height];
+      map_ = new uint32_t[width * height];
+      egg_ = new uint32_t[width * height];
+
+      mapGroup_ = new QGraphicsItemGroup;
+      scene_.addItem(mapGroup_);
+
+      gridGroup_ = new QGraphicsItemGroup;
+
+      for (uint32_t y = 0; y <= height_; ++y)
+      {
+         QGraphicsLineItem* line = scene_.addLine(0.0, TILE_SIZE * y, TILE_SIZE * width_, TILE_SIZE * y);
+         QPen pen = line->pen();
+         pen.setWidthF(0.025);
+         line->setPen(pen);
+         gridGroup_->addToGroup(line);
+      }
+
+      for (uint32_t x = 0; x <= width_; ++x)
+      {
+         QGraphicsLineItem* line = scene_.addLine(TILE_SIZE * x, 0.0, TILE_SIZE * x, TILE_SIZE * height_);
+         QPen pen = line->pen();
+         pen.setWidthF(0.025);
+         line->setPen(pen);
+         gridGroup_->addToGroup(line);
+      }
+
+      gridGroup_->setZValue(-65);
+      scene_.addItem(gridGroup_);
+   }
+
 
    for (uint32_t y = 0; y < height_; ++y)
    {
@@ -79,29 +110,6 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
          egg_[width_ * y + x] = 999; // width * height;
       }
    }
-
-   /*grid_ = new QGraphicsItemGroup;
-
-   for (uint32_t y = 0; y <= height_; ++y)
-   {
-      QGraphicsLineItem* line = scene_.addLine(0.0, TILE_SIZE * y, TILE_SIZE * width_, TILE_SIZE * y);
-      QPen pen = line->pen();
-      pen.setWidthF(0.025);
-      line->setPen(pen);
-      grid_->addToGroup(line);
-   }
-
-   for (uint32_t x = 0; x <= width_; ++x)
-   {
-      QGraphicsLineItem* line = scene_.addLine(TILE_SIZE * x, 0.0, TILE_SIZE * x, TILE_SIZE * height_);
-      QPen pen = line->pen();
-      pen.setWidthF(0.025);
-      line->setPen(pen);
-      grid_->addToGroup(line);
-   }
-
-   grid_->setZValue(-65);
-   scene_.addItem(grid_);*/
 
    Render();
 }
@@ -130,20 +138,23 @@ bool MapView::InBounds(const int32_t x,
 
 void MapView::Render()
 {
+   scene_.removeItem(mapGroup_);
+
    for (uint32_t y = 0; y < height_; ++y)
    {
       for (uint32_t x = 0; x < width_; ++x)
       {
-         tileStore_->GetTile(map_[width_ * y + x]).Render(scene_, TILE_SIZE * x, TILE_SIZE * y, TILE_SIZE);
+         QGraphicsItem* item = tileStore_->GetTile(map_[width_ * y + x]).Render(scene_, TILE_SIZE * x, TILE_SIZE * y, TILE_SIZE);
+         mapGroup_->addToGroup(item);
       }
    }
 
-   /*
-   if (grid_ != nullptr)
+   scene_.addItem(mapGroup_);
+
+   if (gridGroup_ != nullptr)
    {
-      grid_->setVisible(showGrid_);
+      gridGroup_->setVisible(showGrid_);
    }
-*/
 
    resizeEvent(nullptr);
 }
@@ -183,6 +194,12 @@ void MapView::mousePressEvent(QMouseEvent* event)
    emit Changed(x, y, oldTile, newTile);
 
    QGraphicsView::mousePressEvent(event);
+}
+
+
+void MapView::wheelEvent(QWheelEvent* event)
+{
+   // Ignore wheel events.
 }
 
 
@@ -366,7 +383,7 @@ void MapView::DoEggFlood(const uint32_t x,
 
    uint32_t tileId = map_[width_ * y + x] - 1;
 
- //It's in the map,      The outwards path directiom      The direction of the destination tile matches         It's score would be lower (aka better)   Flood the map in this direction
+   //It's in the map,    The outwards path directiom      The direction of the destination tile matches         It's score would be lower (aka better)   Flood the map in this direction
    if ((y >= 1)          && ((tileId & 0x1) == 0) && (((map_[width_ * (y - 1) + (x + 0)] - 1) & 0x4) == 0) && (egg_[(y - 1) * width_ + (x + 0)] > dist)) DoEggFlood(x + 0, y - 1, dist + 1);
    if ((x < width_ - 1)  && ((tileId & 0x2) == 0) && (((map_[width_ * (y + 0) + (x + 1)] - 1) & 0x8) == 0) && (egg_[(y + 0) * width_ + (x + 1)] > dist)) DoEggFlood(x + 1, y + 0, dist + 1);
    if ((y < height_ - 1) && ((tileId & 0x4) == 0) && (((map_[width_ * (y + 1) + (x + 0)] - 1) & 0x1) == 0) && (egg_[(y + 1) * width_ + (x + 0)] > dist)) DoEggFlood(x + 0, y + 1, dist + 1);

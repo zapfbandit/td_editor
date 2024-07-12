@@ -74,8 +74,6 @@ MainWindow::MainWindow(QWidget *parent):
    timer->start(100);
    connect(timer, &QTimer::timeout,
            this, &MainWindow::Tick);
-
-   //QTimer::singleShot(0, this, &MainWindow::Tick);
 }
 
 
@@ -105,7 +103,7 @@ void MainWindow::MakeSpawns()
 
          qDebug() << x << y << dx << dy;
 
-         for (uint32_t i = 0; i < 3; ++i)
+         for (uint32_t i = 0; i < 1; ++i)
          {
             double px = 0;
             double py = 0;
@@ -116,7 +114,7 @@ void MainWindow::MakeSpawns()
             }
             while (px*px + py*py > 1);
 
-            spriteMgr_.Add(x + 0.2*px, y + 0.2*py, dx, dy, 0.5, "Enemies", "Bat", 6, 10, 0.2);
+            spriteMgr_.Add(x + 0.2*px, y + 0.2*py, dx, dy, 0.5, "Enemies", "Zombie", 6, 10, 0.2);
          }
       }
    }
@@ -140,8 +138,6 @@ void MainWindow::Tick()
    game_.Tick();
 
    ui->statusbar->showMessage(QString("Sprites = %0").arg(spriteMgr_.NumSprites()));
-
-   //QTimer::singleShot(100, this, &MainWindow::Tick);
 }
 
 

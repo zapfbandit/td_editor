@@ -40,6 +40,8 @@ bool Sprite::Create(const double   x,
                     const double   framesPerSec,
                     const double   gridPerSec)
 {
+//qDebug() << QString("Sprite::Create(...)");
+
    frame_ = 0;
    dist_ = 0.0;
 
@@ -71,6 +73,8 @@ bool Sprite::Create(const double   x,
    item_->setScale(scale / pixmap.width());
    item_->setPos(x, y);
 
+   qDebug() << item_;
+
    Tick(0.0);
 
    return true;
@@ -79,8 +83,8 @@ bool Sprite::Create(const double   x,
 
 bool Sprite::Destroy()
 {
-   qDebug() << "Destroy";
-   //scene_->removeItem(item_);
+//qDebug() << "Sprite::Destroy()";
+   scene_->removeItem(item_);
    return true;
 }
 
@@ -123,9 +127,9 @@ void Sprite::SetVel(const double dx,
    }
 
    baseFrameIndex_ = store_->GetPixmapIndex(QString("%0/%1/Walk/%2").
-                                             arg(spriteType_).
-                                             arg(spriteName_).
-                                             arg(spriteDir_));
+                                             arg(spriteType_,
+                                                 spriteName_,
+                                                 spriteDir_));
 }
 
 

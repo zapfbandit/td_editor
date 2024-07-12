@@ -33,7 +33,7 @@ void SpriteMgr::Init(QGraphicsScene* scene,
                      PixmapStore*    store,
                      MapView*        map)
 {
-qDebug() << "SpriteMgr::Init(...)";
+//qDebug() << "SpriteMgr::Init(...)";
 
    for (uint32_t i = 0; i < maxSprites_; ++i)
    {
@@ -55,7 +55,7 @@ uint32_t SpriteMgr::Add(const double   x,
                         const double   framesPerSec,
                         const double   gridPerSec)
 {
-qDebug() << "SpriteMgr::Add(...)";
+//qDebug() << "SpriteMgr::Add(...)";
 
    if (freeSprites_.size() > 0)
    {
@@ -85,9 +85,11 @@ void SpriteMgr::Tick(const double renderTimeInS)
 
    for (Sprite* sprite: deadSprites_)
    {
-      //sprite->Destroy();
+      sprite->Destroy();
       FreeSprite(sprite);
    }
+
+   deadSprites_.clear();
 }
 
 
