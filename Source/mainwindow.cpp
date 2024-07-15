@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent):
    QMainWindow(parent),
    ui(new Ui::MainWindow),
    tileStore_(settings_.TilesPath()),
+   eventsEditor_(ui),
    pixmapStore_(settings_.SpritesPath()),
    spriteMgr_(1024),
    saveUndoCount_(0),
@@ -57,7 +58,10 @@ MainWindow::MainWindow(QWidget *parent):
            this,            &MainWindow::Redo);
 
    connect(ui->actionShowGrid_, &QAction::triggered,
-           this,                &MainWindow::ShowGrid);
+           this,                &MainWindow::ShowGrid);   
+
+   connect(ui->applyPushButton_, &QAbstractButton::clicked,
+           &eventsEditor_,       &EventsEditor::ApplyNumStages);
 
    const bool showGrid = settings_.ShowGrid();
    ui->actionShowGrid_->setChecked(showGrid);

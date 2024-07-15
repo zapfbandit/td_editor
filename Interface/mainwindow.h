@@ -6,6 +6,8 @@
 #include "pixmapstore.h"
 #include "spritemgr.h"
 
+#include "eventseditor.h"
+
 #include "settings.h"
 #include "game.h"
 
@@ -77,4 +79,6 @@ private:
    std::vector<UndoEntry> redoStack_;
 
    uint32_t saveUndoCount_;
+
+   EventsEditor eventsEditor_;
 };
