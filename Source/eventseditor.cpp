@@ -42,3 +42,15 @@ void EventsEditor::ApplyNumStages()
       }
    }
 }
+
+
+void EventsEditor::Add()
+{
+   qDebug() << "EventsEditor::Add";
+}
+
+
+void EventsEditor::Remove()
+{
+   qDebug() << "EventsEditor::Remove";
+}

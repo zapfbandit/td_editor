@@ -14,6 +14,8 @@ public:
 public slots:
 
    void ApplyNumStages();
+   void Add();
+   void Remove();
 
 private:
 
