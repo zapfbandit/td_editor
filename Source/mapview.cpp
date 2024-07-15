@@ -18,7 +18,8 @@ MapView::MapView(QWidget* parent):
    map_(nullptr),
    egg_(nullptr),
    showGrid_(true),
-   gridGroup_(nullptr)
+   gridGroup_(nullptr),
+   mapGroup_(nullptr)
 {
    setScene(&scene_);
 }
@@ -74,10 +75,11 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
       map_ = new uint32_t[width * height];
       egg_ = new uint32_t[width * height];
 
-      mapGroup_ = new QGraphicsItemGroup;
-      scene_.addItem(mapGroup_);
-
+      scene_.removeItem(gridGroup_);
+      delete gridGroup_;
       gridGroup_ = new QGraphicsItemGroup;
+      scene_.addItem(gridGroup_);
+      gridGroup_->setZValue(-65);
 
       for (uint32_t y = 0; y <= height_; ++y)
       {
@@ -96,11 +98,7 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
          line->setPen(pen);
          gridGroup_->addToGroup(line);
       }
-
-      gridGroup_->setZValue(-65);
-      scene_.addItem(gridGroup_);
    }
-
 
    for (uint32_t y = 0; y < height_; ++y)
    {
@@ -139,6 +137,10 @@ bool MapView::InBounds(const int32_t x,
 void MapView::Render()
 {
    scene_.removeItem(mapGroup_);
+   delete mapGroup_;
+   mapGroup_ = new QGraphicsItemGroup;
+   scene_.addItem(mapGroup_);
+   mapGroup_->setZValue(-100);
 
    for (uint32_t y = 0; y < height_; ++y)
    {
@@ -148,8 +150,6 @@ void MapView::Render()
          mapGroup_->addToGroup(item);
       }
    }
-
-   scene_.addItem(mapGroup_);
 
    if (gridGroup_ != nullptr)
    {
