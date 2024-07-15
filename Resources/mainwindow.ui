@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1117</width>
-    <height>652</height>
+    <width>1385</width>
+    <height>1011</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,28 +16,74 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="8,1">
-      <item>
-       <widget class="MapView" name="mapView_">
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
-        <property name="horizontalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,4">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="mapTab">
+       <attribute name="title">
+        <string>Map</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="6,0">
         <item>
-         <widget class="SelectedView" name="selectedView_"/>
+         <widget class="MapView" name="mapView_">
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+         </widget>
         </item>
         <item>
-         <widget class="TilesView" name="tilesView_"/>
+         <layout class="QVBoxLayout" name="verticalLayout" stretch="1,4">
+          <item>
+           <widget class="SelectedView" name="selectedView_"/>
+          </item>
+          <item>
+           <widget class="TilesView" name="tilesView_"/>
+          </item>
+         </layout>
         </item>
        </layout>
-      </item>
-     </layout>
+      </widget>
+      <widget class="QWidget" name="eventsTab">
+       <attribute name="title">
+        <string>Events</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QTreeWidget" name="eventTreeWidget_">
+          <column>
+           <property name="text">
+            <string>Stage</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Time</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Spawn Point</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Number</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -46,8 +92,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1117</width>
-     <height>21</height>
+     <width>1385</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -14,7 +14,6 @@ Tile::Tile(const QString& imagePath)
 }
 
 
-
 void Tile::LoadImagePath(const QString& imagePath)
 {
    imagePath_ = imagePath;
@@ -24,7 +23,6 @@ void Tile::LoadImagePath(const QString& imagePath)
       exit(EXIT_FAILURE);
    }
 }
-
 
 
 QString Tile::GetImagePath() const
