@@ -24,7 +24,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-set(CMAKE_PREFIX_PATH "D:/Qt/6.6.3/mingw_64/lib/cmake")
+set(CMAKE_PREFIX_PATH "C:/Qt/Qt6.1.2/6.1.2/mingw81_64/lib/cmake")
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
@@ -41,7 +41,8 @@ set(PROJECT_SOURCES
    Source/tilesview.cpp
    Source/selectedview.cpp
    Source/mapview.cpp
-   Source/newdialog.cpp 
+   Source/newdialog.cpp
+   Source/eventseditor.cpp
    Source/settings.cpp
    Source/pixmapstore.cpp
    Source/sprite.cpp
@@ -56,6 +57,7 @@ set(PROJECT_SOURCES
    Interface/selectedview.h
    Interface/mapview.h
    Interface/newdialog.h
+   Interface/eventseditor.h
    Interface/settings.h
    Interface/pixmapstore.h
    Interface/sprite.h
@@ -90,12 +92,6 @@ target_link_libraries(TDEditor PRIVATE
    Qt${QT_VERSION_MAJOR}::Widgets
 )
 
-if(WIN32)
-  target_link_libraries(TDEditor PRIVATE
-     ws2_32
-  )
-endif()
-
 set_target_properties(TDEditor PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -105,3 +101,10 @@ set_target_properties(TDEditor PROPERTIES
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(TDEditor)
 endif()
+
+if (NOT DEFINED ENV{ADT_BUILD_SERVER})
+   add_custom_command(TARGET TDEditor POST_BUILD
+      COMMAND "C:/AdtDevEnv/Core/signtool/signtool.exe" sign /fd SHA256 /f "Code Signing.cer" TDEditor.exe
+   )
+endif()
+
