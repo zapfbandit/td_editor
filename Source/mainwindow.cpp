@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent):
    ui->tilesView_->SetSelectedView(ui->selectedView_);
    ui->mapView_->SetSelectedView(ui->selectedView_);
 
+   ui->mapView_->SetDelegate(&spawnDelegate_);
+
    ui->actionSave_->setDisabled(true);
    ui->actionSaveAs_->setDisabled(true);
 

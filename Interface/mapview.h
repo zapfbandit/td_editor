@@ -7,6 +7,7 @@
 #include "settings.h"
 #include "tilestore.h"
 #include "selectedview.h"
+#include "spawndelegate.h"
 
 
 class MapView : public QGraphicsView
@@ -36,6 +37,7 @@ public:
    void SetSettings(Settings* settings);
    void SetTileStore(TileStore* tileStore);
    void SetSelectedView(SelectedView* selectedView);
+   void SetDelegate(SpawnDelegate* spawnDelegate);
    void SetSize(const uint32_t width, const uint32_t height);
    void Render();
 
@@ -80,7 +82,7 @@ private:
 
    TileStore* tileStore_{nullptr};
 
-   SelectedView* selectedView_;
+   SelectedView* selectedView_{nullptr};
 
    uint32_t width_;
    uint32_t height_;
@@ -93,6 +95,8 @@ private:
    QGraphicsItemGroup* mapGroup_;
 
    std::vector<Spawn> spawns_;
+
+   SpawnDelegate* spawnDelegate_{nullptr};
 
    static constexpr double TILE_SIZE = 1.0;
 };

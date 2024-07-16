@@ -63,6 +63,8 @@ private:
    TileStore tileStore_;
    PixmapStore pixmapStore_;
 
+   SpawnDelegate delegate_;
+
    SpriteMgr spriteMgr_;
 
    QString mapPath_;

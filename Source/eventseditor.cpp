@@ -10,10 +10,9 @@ EventsEditor::EventsEditor(Ui::MainWindow* ui):
 {}
 
 
-void EventsEditor::Setup()
+void EventsEditor::Setup(SpawnDelegate* spawnDelegate)
 {
-   SpawnDelegate* delegate = new SpawnDelegate;
-   ui_->eventTreeWidget_->setItemDelegate(delegate);
+   ui_->eventTreeWidget_->setItemDelegate(spawnDelegate);
    ui_->eventTreeWidget_->setEditTriggers(QAbstractItemView::AllEditTriggers);
 
    ui_->addPushButton_->setEnabled(false);

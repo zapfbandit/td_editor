@@ -15,7 +15,7 @@ public:
 
 public:
 
-   void Setup();
+   void Setup(SpawnDelegate* spawnDelegate);
 
 public slots:
 

@@ -46,6 +46,7 @@ set(PROJECT_SOURCES
    Source/spawndelegate.cpp
    Source/settings.cpp
    Source/pixmapstore.cpp
+   Source/spawnmgr.cpp
    Source/sprite.cpp
    Source/spritemgr.cpp
    Source/game.cpp
@@ -62,6 +63,7 @@ set(PROJECT_SOURCES
    Interface/spawndelegate.h
    Interface/settings.h
    Interface/pixmapstore.h
+   Interface/spawnmgr.h
    Interface/sprite.h
    Interface/spritemgr.h
    Interface/game.h

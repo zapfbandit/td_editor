@@ -19,7 +19,8 @@ MapView::MapView(QWidget* parent):
    egg_(nullptr),
    showGrid_(true),
    gridGroup_(nullptr),
-   mapGroup_(nullptr)
+   mapGroup_(nullptr),
+   delegate_(nullptr)
 {
    setScene(&scene_);
 }
@@ -56,6 +57,12 @@ void MapView::SetTileStore(TileStore* tileStore)
 void MapView::SetSelectedView(SelectedView* selectedView)
 {
    selectedView_ = selectedView;
+}
+
+
+void MapView::SetDelegate(SpawnDelegate* spawnDelegate)
+{
+   spawnDelegate_ = spawnDelegate;
 }
 
 
@@ -333,6 +340,11 @@ for (uint32_t y = 0; y < height_; ++y)
          double dx, dy;
          stream >> index >> x >> y >> dx >> dy;
          spawns_.push_back({index, x, y, dx, dy});
+      }
+
+      if (spawnDelegate_ != nullptr)
+      {
+         spawnDelegate_->SetSpawns(spawns_);
       }
 
       uint32_t i = 0;
