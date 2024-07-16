@@ -20,7 +20,7 @@ MapView::MapView(QWidget* parent):
    showGrid_(true),
    gridGroup_(nullptr),
    mapGroup_(nullptr),
-   delegate_(nullptr)
+   spawnDelegate_(nullptr)
 {
    setScene(&scene_);
 }
@@ -216,7 +216,7 @@ uint32_t MapView::NumSpawns()
 }
 
 
-MapView::Spawn& MapView::GetSpawn(const uint32_t num)
+SpawnMgr::SpawnInfo& MapView::GetSpawn(const uint32_t num)
 {
    return spawns_[num];
 }
@@ -460,13 +460,13 @@ bool MapView::SaveToFile(const QString& path)
       for (uint32_t y = 0; y < height_; ++y)
       {
          tileId = map_[width_ * (y + 0) + (0)] - 1;
-         if ((tileId != 0) && ((tileId & 0x8) == 0))
+         if ((tileId != -1) && ((tileId & 0x8) == 0))
          {
             spawns_.push_back({index++, 0, (double)y, -1, 0});
          }
 
          tileId = map_[width_ * (y + 0) + (width_ - 1)] - 1;
-         if ((tileId != 0) && ((tileId & 0x2) == 0))
+         if ((tileId != -1) && ((tileId & 0x2) == 0))
          {
             spawns_.push_back({index++, (double)(width_ - 1), (double)y, 1, 0});
          }
@@ -475,13 +475,13 @@ bool MapView::SaveToFile(const QString& path)
       for (uint32_t x = 0; x < width_; ++x)
       {
          tileId = map_[width_ * (0) + x] - 1;
-         if ((tileId != 0) && ((tileId & 0x1) == 0))
+         if ((tileId != -1) && ((tileId & 0x1) == 0))
          {
             spawns_.push_back({index++, (double)x, 0, 0, -1});
          }
 
          tileId = map_[width_ * (height_ - 1) + x] - 1;
-         if ((tileId != 0) && ((tileId & 0x4) == 0))
+         if ((tileId != -1) && ((tileId & 0x4) == 0))
          {
             spawns_.push_back({index++, (double)x, (double)(height_ - 1), 0, 1});
          }

@@ -8,13 +8,13 @@ SpawnDelegate::SpawnDelegate()
 {}
 
 
-void SpawnDelegate::SetSpawns(std::vector<MapView::Spawn>& spawns)
+void SpawnDelegate::SetSpawns(std::vector<SpawnMgr::SpawnInfo>& spawns)
 {
    spawnsStringList_.clear();
-   for (MapView::Spawn spawn: spawns)
+   for (SpawnMgr::SpawnInfo spawn: spawns)
    {
-      QString name = QString("%0 (%1,%2)").arg(spawn.index_).arg(spawn.x_).arg(spawn.y_);
-      spawnsStringList_.push_front(name);
+      QString name = QString("%0 (%1,%2) (%3,%4)").arg(spawn.index_).arg(spawn.x_).arg(spawn.y_).arg(spawn.dx_).arg(spawn.dy_);
+      spawnsStringList_.push_back(name);
    }
 }
 

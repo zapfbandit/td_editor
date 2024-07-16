@@ -2,7 +2,7 @@
 
 #include <QStyledItemDelegate>
 
-#include "mapview.h"
+#include "spawnmgr.h"
 
 
 
@@ -16,7 +16,7 @@ public:
 
 public:
 
-   void SetSpawns(std::vector<MapView::Spawn>& spawns);
+   void SetSpawns(std::vector<SpawnMgr::SpawnInfo>& spawns);
 
 protected:
 

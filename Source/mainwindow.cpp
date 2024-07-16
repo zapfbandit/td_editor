@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent):
    connect(ui->actionShowGrid_, &QAction::triggered,
            this,                &MainWindow::ShowGrid);   
 
-   eventsEditor_.Setup();
+   eventsEditor_.Setup(&spawnDelegate_);
 
    connect(ui->applyPushButton_, &QAbstractButton::clicked,
            &eventsEditor_,       &EventsEditor::ApplyNumStages);
@@ -111,7 +111,7 @@ void MainWindow::MakeSpawns()
    {
       for (uint32_t i = 0; i < numSpawns; ++i)
       {
-         MapView::Spawn spawn = ui->mapView_->GetSpawn(i);
+         SpawnMgr::SpawnInfo spawn = ui->mapView_->GetSpawn(i);
 
          double x = spawn.x_ + spawn.dx_ + 0.5;
          double dx = -spawn.dx_;

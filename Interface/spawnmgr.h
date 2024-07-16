@@ -1,11 +1,22 @@
-#ifndef SPAWNMGR_H
-#define SPAWNMGR_H
+#pragma once
+
+#include <stdint.h>
 
 
 class SpawnMgr
 {
 public:
-   SpawnMgr();
-};
 
-#endif // SPAWNMGR_H
+   SpawnMgr();
+   
+public:
+
+   struct SpawnInfo
+   {
+      uint32_t index_;
+      double x_;
+      double y_;
+      double dx_;
+      double dy_;
+   };
+};

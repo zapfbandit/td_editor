@@ -63,7 +63,7 @@ private:
    TileStore tileStore_;
    PixmapStore pixmapStore_;
 
-   SpawnDelegate delegate_;
+   SpawnDelegate spawnDelegate_;
 
    SpriteMgr spriteMgr_;
 

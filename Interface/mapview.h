@@ -8,6 +8,7 @@
 #include "tilestore.h"
 #include "selectedview.h"
 #include "spawndelegate.h"
+#include "spawnmgr.h"
 
 
 class MapView : public QGraphicsView
@@ -18,17 +19,6 @@ public:
 
    MapView(QWidget* parent);
    ~MapView();
-
-public:
-
-   struct Spawn
-   {
-      uint32_t index_;
-      double x_;
-      double y_;
-      double dx_;
-      double dy_;
-   };
 
 public:
 
@@ -48,7 +38,7 @@ public:
 
 public:
    uint32_t NumSpawns();
-   Spawn& GetSpawn(const uint32_t num);
+   SpawnMgr::SpawnInfo& GetSpawn(const uint32_t num);
 
 public:
 
@@ -94,7 +84,7 @@ private:
    QGraphicsItemGroup* gridGroup_;
    QGraphicsItemGroup* mapGroup_;
 
-   std::vector<Spawn> spawns_;
+   std::vector<SpawnMgr::SpawnInfo> spawns_;
 
    SpawnDelegate* spawnDelegate_{nullptr};
 
