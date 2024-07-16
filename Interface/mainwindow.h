@@ -58,6 +58,8 @@ private:
 
    Ui::MainWindow *ui;
 
+   EventsEditor eventsEditor_;
+
    TileStore tileStore_;
    PixmapStore pixmapStore_;
 
@@ -80,5 +82,4 @@ private:
 
    uint32_t saveUndoCount_;
 
-   EventsEditor eventsEditor_;
 };

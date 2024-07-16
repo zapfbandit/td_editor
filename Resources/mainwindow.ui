@@ -160,7 +160,7 @@
           </column>
           <column>
            <property name="text">
-            <string>Time</string>
+            <string>Percent</string>
            </property>
           </column>
           <column>

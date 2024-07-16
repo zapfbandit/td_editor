@@ -43,6 +43,7 @@ set(PROJECT_SOURCES
    Source/mapview.cpp
    Source/newdialog.cpp
    Source/eventseditor.cpp
+   Source/spawndelegate.cpp
    Source/settings.cpp
    Source/pixmapstore.cpp
    Source/sprite.cpp
@@ -58,6 +59,7 @@ set(PROJECT_SOURCES
    Interface/mapview.h
    Interface/newdialog.h
    Interface/eventseditor.h
+   Interface/spawndelegate.h
    Interface/settings.h
    Interface/pixmapstore.h
    Interface/sprite.h

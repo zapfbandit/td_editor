@@ -60,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent):
    connect(ui->actionShowGrid_, &QAction::triggered,
            this,                &MainWindow::ShowGrid);   
 
+   eventsEditor_.Setup();
+
    connect(ui->applyPushButton_, &QAbstractButton::clicked,
            &eventsEditor_,       &EventsEditor::ApplyNumStages);
 
@@ -68,6 +70,9 @@ MainWindow::MainWindow(QWidget *parent):
 
    connect(ui->removePushButton_, &QAbstractButton::clicked,
            &eventsEditor_,        &EventsEditor::Remove);
+
+   connect(ui->eventTreeWidget_, &QTreeWidget::itemSelectionChanged,
+           &eventsEditor_,       &EventsEditor::ItemSelectionChanged);
 
    const bool showGrid = settings_.ShowGrid();
    ui->actionShowGrid_->setChecked(showGrid);
