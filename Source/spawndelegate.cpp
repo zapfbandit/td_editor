@@ -28,7 +28,8 @@ void SpawnDelegate::SetSpawns(std::vector<SpawnMgr::SpawnInfo>& spawns)
       QString arrowStr = "";
       for (Arrow& arrow: arrows)
       {
-         if ((spawn.dx_ == arrow.dx) && (spawn.dy_ == arrow.dy))
+         if ((spawn.dx_ == arrow.dx) &&
+             (spawn.dy_ == arrow.dy))
          {
             arrowStr = arrow.str;
          }
