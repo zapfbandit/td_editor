@@ -17,6 +17,7 @@ public:
 public:
 
    void SetSpawns(std::vector<SpawnMgr::SpawnInfo>& spawns);
+   void SetEnemies(QStringList& enemiesStringList);
 
 protected:
 
@@ -30,4 +31,5 @@ protected:
 
 private:
    QStringList spawnsStringList_;
+   QStringList enemiesStringList_;
 };

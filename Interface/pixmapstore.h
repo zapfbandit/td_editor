@@ -28,13 +28,14 @@ public:
 public:
 
    void CalcNumPixmaps(const QString& dirPath);
-   void LoadPixmaps(const QString& dirPath);
+   void LoadPixmaps(const QString& dirPath, const bool enemiesDir);
 
 public:
 
    uint32_t NumPixmaps() const;
    uint32_t GetPixmapIndex(QString pixmapRelPath);
    QPixmap* GetPixmap(uint32_t i);
+   QStringList& Enemies();
 
 private:
 
@@ -45,5 +46,7 @@ private:
 
    QPixmap* pixmap_;
    QString* pixmapRelPath_;
+
+   QStringList enemies_;
 };
 

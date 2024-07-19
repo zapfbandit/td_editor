@@ -10,12 +10,38 @@ SpawnDelegate::SpawnDelegate()
 
 void SpawnDelegate::SetSpawns(std::vector<SpawnMgr::SpawnInfo>& spawns)
 {
+   struct Arrow
+   {
+      int dx;
+      int dy;
+      QString str;
+   };
+
+   std::vector<Arrow> arrows = {{ 0, -1, "↑"},
+                                { 1,  0, "→"},
+                                { 0,  1, "↓"},
+                                {-1,  0, "←"}};
+
    spawnsStringList_.clear();
    for (SpawnMgr::SpawnInfo spawn: spawns)
    {
-      QString name = QString("%0 (%1,%2) (%3,%4)").arg(spawn.index_).arg(spawn.x_).arg(spawn.y_).arg(spawn.dx_).arg(spawn.dy_);
+      QString arrowStr = "";
+      for (Arrow& arrow: arrows)
+      {
+         if ((spawn.dx_ == arrow.dx) && (spawn.dy_ == arrow.dy))
+         {
+            arrowStr = arrow.str;
+         }
+      }
+      QString name = QString("(%1,%2) %3").arg(spawn.x_).arg(spawn.y_).arg(arrowStr);
       spawnsStringList_.push_back(name);
    }
+}
+
+
+void SpawnDelegate::SetEnemies(QStringList& enemiesStringList)
+{
+   enemiesStringList_ = enemiesStringList;
 }
 
 
@@ -32,6 +58,11 @@ QWidget* SpawnDelegate::createEditor(QWidget *parent,
 {
    qDebug() << "SpawnDelegate::createEditor";
 
+
+   if (index.column() == 0)
+   {
+      return nullptr;
+   }
 
    if (index.column() == 1)
    {
@@ -60,7 +91,7 @@ QWidget* SpawnDelegate::createEditor(QWidget *parent,
    if (index.column() == 4)
    {
       QComboBox* combo = new QComboBox(parent);
-      combo->addItems(QStringList() << "Type");
+      combo->addItems(enemiesStringList_);
       return combo;
    }
 

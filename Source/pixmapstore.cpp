@@ -15,7 +15,7 @@ PixmapStore::PixmapStore(const QString& pixmapDirPath):
    pixmap_ = new QPixmap[numPixmaps_];
    pixmapRelPath_ = new QString[numPixmaps_];
 
-   LoadPixmaps(pixmapDirPath);
+   LoadPixmaps(pixmapDirPath, false);
 
    if (offset_ != numPixmaps_)
    {
@@ -42,11 +42,16 @@ qDebug() << QString("PixmapStore::CalcNumPixmaps(dirPath = %0)").arg(dirPath);
 }
 
 
-void PixmapStore::LoadPixmaps(const QString& dirPath)
+void PixmapStore::LoadPixmaps(const QString& dirPath, const bool enemiesDir)
 {
-qDebug() << QString("PixmapStore::LoadPixmaps = %0").arg(dirPath);
+qDebug() << QString("PixmapStore::LoadPixmaps(%0, %1)").arg(dirPath).arg(enemiesDir);
 
    QDir currDir(dirPath);
+
+   if (enemiesDir)
+   {
+      enemies_.push_back(dirPath.right(dirPath.size() - dirPath.lastIndexOf("/") - 1));
+   }
 
    QFileInfoList pixmapList = currDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);   
    uint32_t numAnimFrames = pixmapList.size();
@@ -61,8 +66,6 @@ qDebug() << QString("PixmapStore::LoadPixmaps = %0").arg(dirPath);
 
          pixmapRelPath_[offset_] = animDirPath;
 
-qDebug() << animDirPath << numAnimFrames;
-
          offset_++;
       }
    }
@@ -71,7 +74,8 @@ qDebug() << animDirPath << numAnimFrames;
 
    for (QFileInfo& dir: dirList)
    {
-      LoadPixmaps(dir.absoluteFilePath());
+
+      LoadPixmaps(dir.absoluteFilePath(), currDir.absolutePath().endsWith("/Enemies"));
    }
 }
 
@@ -127,5 +131,11 @@ qDebug() << QString("PixmapStore::GetPixmap(name = %0; numPixmaps_ = %1)").arg(p
    exit(EXIT_FAILURE);
 
    return numPixmaps_;
+}
+
+
+QStringList& PixmapStore::Enemies()
+{
+   return enemies_;
 }
 

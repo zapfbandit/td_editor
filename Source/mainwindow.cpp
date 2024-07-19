@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent):
    ui->actionSave_->setDisabled(true);
    ui->actionSaveAs_->setDisabled(true);
 
+   spawnDelegate_.SetEnemies(pixmapStore_.Enemies());
+
    connect(ui->mapView_, &MapView::Touched,
            this,         &MainWindow::MakeDirty);
 
