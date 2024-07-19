@@ -44,6 +44,7 @@ set(PROJECT_SOURCES
    Source/newdialog.cpp
    Source/eventseditor.cpp
    Source/spawndelegate.cpp
+   Source/percentdelegate.cpp
    Source/settings.cpp
    Source/pixmapstore.cpp
    Source/spawnmgr.cpp
@@ -61,6 +62,7 @@ set(PROJECT_SOURCES
    Interface/newdialog.h
    Interface/eventseditor.h
    Interface/spawndelegate.h
+   Interface/percentdelegate.h
    Interface/settings.h
    Interface/pixmapstore.h
    Interface/spawnmgr.h

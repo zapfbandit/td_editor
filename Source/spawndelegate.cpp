@@ -65,15 +65,6 @@ QWidget* SpawnDelegate::createEditor(QWidget *parent,
       return nullptr;
    }
 
-   if (index.column() == 1)
-   {
-      QSpinBox* spin = new QSpinBox(parent);
-      spin->setMinimum(0);
-      spin->setMaximum(100);
-      spin->setSuffix("%");
-      return spin;
-   }
-
    if (index.column() == 2)
    {
       QComboBox* combo = new QComboBox(parent);

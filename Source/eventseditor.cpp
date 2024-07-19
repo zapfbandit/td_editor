@@ -3,6 +3,7 @@
 #include <QTreeWidget>
 
 #include "spawndelegate.h"
+#include "percentdelegate.h"
 
 
 EventsEditor::EventsEditor(Ui::MainWindow* ui):
@@ -14,6 +15,8 @@ void EventsEditor::Setup(SpawnDelegate* spawnDelegate)
 {
    ui_->eventTreeWidget_->setItemDelegate(spawnDelegate);
    ui_->eventTreeWidget_->setEditTriggers(QAbstractItemView::AllEditTriggers);
+
+   ui_->eventTreeWidget_->setItemDelegateForColumn(1, new PercentDelegate);
 
    ui_->addPushButton_->setEnabled(false);
    ui_->removePushButton_->setEnabled(false);
@@ -62,7 +65,7 @@ void EventsEditor::Add()
 {
    qDebug() << "EventsEditor::Add";
 
-   QTreeWidgetItem* newItem = new QTreeWidgetItem(QStringList() << "" << "50 %" << "0 (0, 0)" << "3" << "Zombie");
+   QTreeWidgetItem* newItem = new QTreeWidgetItem(QStringList() << "" << "50" << "(0, 0)" << "3" << "Zombie");
    newItem->setFlags(newItem->flags() | Qt::ItemIsEditable);
 
    int pos = 0;
