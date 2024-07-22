@@ -31,7 +31,6 @@ MainWindow::MainWindow(QWidget *parent):
    ui->tilesView_->SetSelectedView(ui->selectedView_);
    ui->mapView_->SetSelectedView(ui->selectedView_);
 
-   ui->mapView_->SetDelegate(&spawnDelegate_);
    ui->mapView_->SetSpawnMgr(&spawnMgr_);
 
    ui->actionSave_->setDisabled(true);
