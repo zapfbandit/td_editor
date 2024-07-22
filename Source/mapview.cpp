@@ -66,6 +66,12 @@ void MapView::SetDelegate(SpawnDelegate* spawnDelegate)
 }
 
 
+void MapView::SetSpawnMgr(SpawnMgr* spawnMgr)
+{
+   spawnMgr_ = spawnMgr;
+}
+
+
 void MapView::SetSize(const uint32_t width, const uint32_t height)
 {
    qDebug() << "MapView::SetSize";
@@ -117,6 +123,18 @@ void MapView::SetSize(const uint32_t width, const uint32_t height)
    }
 
    Render();
+}
+
+
+uint32_t MapView::Width() const
+{
+   return width_;
+}
+
+
+uint32_t MapView::Height() const
+{
+   return height_;
 }
 
 
@@ -207,18 +225,6 @@ void MapView::mousePressEvent(QMouseEvent* event)
 void MapView::wheelEvent(QWheelEvent* event)
 {
    // Ignore wheel events.
-}
-
-
-uint32_t MapView::NumSpawns()
-{
-   return spawns_.size();
-}
-
-
-SpawnMgr::SpawnInfo& MapView::GetSpawn(const uint32_t num)
-{
-   return spawns_[num];
 }
 
 
@@ -328,30 +334,7 @@ for (uint32_t y = 0; y < height_; ++y)
          exit(EXIT_FAILURE);
       }
 
-      spawns_.clear();
-
-      uint32_t numSpawns = 0;
-      stream >> numSpawns;
-
-      for (uint32_t i = 0; i < numSpawns; ++i)
-      {
-         uint32_t index;
-         double x, y;
-         double dx, dy;
-         stream >> index >> x >> y >> dx >> dy;
-         spawns_.push_back({index, x, y, dx, dy});
-      }
-
-      if (spawnDelegate_ != nullptr)
-      {
-         spawnDelegate_->SetSpawns(spawns_);
-      }
-
-      uint32_t i = 0;
-      for (auto it: spawns_)
-      {
-qDebug() << it.index_ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  ")";
-      }
+      spawnMgr_->LoadSpawns(stream);
 
       file.close();
 
@@ -453,47 +436,7 @@ bool MapView::SaveToFile(const QString& path)
       stream << "Spawns" << "\r\n";
       stream << qSetFieldWidth(4) << Qt::right;
 
-      spawns_.clear();
-      uint32_t index = 0;
-      uint32_t tileId = 0;
-
-      for (uint32_t y = 0; y < height_; ++y)
-      {
-         tileId = map_[width_ * (y + 0) + (0)] - 1;
-         if ((tileId != -1) && ((tileId & 0x8) == 0))
-         {
-            spawns_.push_back({index++, 0, (double)y, -1, 0});
-         }
-
-         tileId = map_[width_ * (y + 0) + (width_ - 1)] - 1;
-         if ((tileId != -1) && ((tileId & 0x2) == 0))
-         {
-            spawns_.push_back({index++, (double)(width_ - 1), (double)y, 1, 0});
-         }
-      }
-
-      for (uint32_t x = 0; x < width_; ++x)
-      {
-         tileId = map_[width_ * (0) + x] - 1;
-         if ((tileId != -1) && ((tileId & 0x1) == 0))
-         {
-            spawns_.push_back({index++, (double)x, 0, 0, -1});
-         }
-
-         tileId = map_[width_ * (height_ - 1) + x] - 1;
-         if ((tileId != -1) && ((tileId & 0x4) == 0))
-         {
-            spawns_.push_back({index++, (double)x, (double)(height_ - 1), 0, 1});
-         }
-      }
-
-      stream << spawns_.size() << "\r\n";
-
-      uint32_t i = 0;
-      for (auto it: spawns_)
-      {
-         stream << it.index_ << it.x_ << it.y_ << it.dx_ << it.dy_ << "\r\n";
-      }
+      spawnMgr_->SaveSpawns(stream, *this);
 
       file.close();
 

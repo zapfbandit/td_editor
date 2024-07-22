@@ -30,7 +30,7 @@ public slots:
    void Tick();
 
    void ShowGrid();
-   void MakeSpawns();
+   //void MakeSpawns();
 
    void NewMap();
    void OpenMap();
@@ -64,6 +64,7 @@ private:
    PixmapStore pixmapStore_;
 
    SpawnDelegate spawnDelegate_;
+   SpawnMgr spawnMgr_;
 
    SpriteMgr spriteMgr_;
 

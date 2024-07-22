@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent):
    eventsEditor_(ui),
    pixmapStore_(settings_.SpritesPath()),
    spriteMgr_(1024),
+   spawnMgr_(spawnDelegate_, spriteMgr_),
    saveUndoCount_(0),
    game_(spriteMgr_)
 {
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent):
    ui->mapView_->SetSelectedView(ui->selectedView_);
 
    ui->mapView_->SetDelegate(&spawnDelegate_);
+   ui->mapView_->SetSpawnMgr(&spawnMgr_);
 
    ui->actionSave_->setDisabled(true);
    ui->actionSaveAs_->setDisabled(true);
@@ -102,47 +104,6 @@ MainWindow::~MainWindow()
    settings_.WindowGeometry(saveGeometry());
 
    delete ui;
-}
-
-
-void MainWindow::MakeSpawns()
-{
-   uint32_t numSpawns = ui->mapView_->NumSpawns();
-
-   if (numSpawns > 0)
-   {
-      for (uint32_t i = 0; i < numSpawns; ++i)
-      {
-         SpawnMgr::SpawnInfo spawn = ui->mapView_->GetSpawn(i);
-
-         double x = spawn.x_ + spawn.dx_ + 0.5;
-         double dx = -spawn.dx_;
-         double y = spawn.y_ + spawn.dy_ + 0.5;
-         double dy = -spawn.dy_;
-
-         qDebug() << x << y << dx << dy;
-
-         for (uint32_t i = 0; i < 1; ++i)
-         {
-            double px = 0;
-            double py = 0;
-            do
-            {
-               px = (rand() - RAND_MAX/2.0) / (RAND_MAX/2.0);
-               py = (rand() - RAND_MAX/2.0) / (RAND_MAX/2.0);
-            }
-            while (px*px + py*py > 1);
-
-            spriteMgr_.Add(x + 0.2*px, y + 0.2*py, dx, dy, 0.5, "Enemies", "Zombie", 6, 10, 0.2);
-         }
-      }
-   }
-   else
-   {
-      //spriteMgr_.Add(0.5, 0.5, 1, 0, 1, "Enemies", "Zombie", 6, 2, 0.1);
-
-      //spriteMgr_.Add(0.5, 0.5, 0, 1, 2, "Enemies", "Zombie - Big", 6, 2, 0.1);
-   }
 }
 
 
@@ -263,7 +224,7 @@ void MainWindow::SaveMap()
    }
 
    OpenLastMap();
-   MakeSpawns();
+   spawnMgr_.MakeSpawns();
 }
 
 

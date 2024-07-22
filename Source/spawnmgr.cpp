@@ -1,6 +1,136 @@
 #include "spawnmgr.h"
 
-SpawnMgr::SpawnMgr()
-{
+#include "spawndelegate.h"
+#include "spritemgr.h"
+#include "mapview.h"
 
+
+SpawnMgr::SpawnMgr(SpawnDelegate& spawnDelegate,
+                   SpriteMgr&     spriteMgr):
+   spawnDelegate_(spawnDelegate),
+   spriteMgr_(spriteMgr)
+{}
+
+
+void SpawnMgr::MakeSpawns()
+{
+   uint32_t numSpawns = NumSpawns();
+
+   if (numSpawns > 0)
+   {
+      for (uint32_t i = 0; i < numSpawns; ++i)
+      {
+         SpawnMgr::SpawnInfo spawn = GetSpawn(i);
+
+         double x = spawn.x_ + spawn.dx_ + 0.5;
+         double dx = -spawn.dx_;
+         double y = spawn.y_ + spawn.dy_ + 0.5;
+         double dy = -spawn.dy_;
+
+         qDebug() << x << y << dx << dy;
+
+         for (uint32_t i = 0; i < 1; ++i)
+         {
+            double px = 0;
+            double py = 0;
+            do
+            {
+               px = (rand() - RAND_MAX/2.0) / (RAND_MAX/2.0);
+               py = (rand() - RAND_MAX/2.0) / (RAND_MAX/2.0);
+            }
+            while (px*px + py*py > 1);
+
+            spriteMgr_.Add(x + 0.2*px, y + 0.2*py, dx, dy, 0.5, "Enemies", "Zombie", 6, 10, 0.2);
+         }
+      }
+   }
+   else
+   {
+      //spriteMgr_.Add(0.5, 0.5, 1, 0, 1, "Enemies", "Zombie", 6, 2, 0.1);
+
+      //spriteMgr_.Add(0.5, 0.5, 0, 1, 2, "Enemies", "Zombie - Big", 6, 2, 0.1);
+   }
+}
+
+
+void SpawnMgr::SaveSpawns(QTextStream& stream, const MapView& map)
+{
+   spawns_.clear();
+   uint32_t index = 0;
+   uint32_t tileId = 0;
+
+   for (uint32_t y = 0; y < map.Height(); ++y)
+   {
+      tileId = map.GetTile(0, y) - 1;
+      if ((tileId != -1) && ((tileId & 0x8) == 0))
+      {
+         spawns_.push_back({index++, 0, (double)y, -1, 0});
+      }
+
+      tileId = map.GetTile(map.Width() - 1, y) - 1;
+      if ((tileId != -1) && ((tileId & 0x2) == 0))
+      {
+         spawns_.push_back({index++, (double)(map.Width() - 1), (double)y, 1, 0});
+      }
+   }
+
+   for (uint32_t x = 0; x < map.Width(); ++x)
+   {
+      tileId = map.GetTile(x, 0) - 1;
+      if ((tileId != -1) && ((tileId & 0x1) == 0))
+      {
+         spawns_.push_back({index++, (double)x, 0, 0, -1});
+      }
+
+      tileId = map.GetTile(x, map.Height() - 1) - 1;
+      if ((tileId != -1) && ((tileId & 0x4) == 0))
+      {
+         spawns_.push_back({index++, (double)x, (double)(map.Height() - 1), 0, 1});
+      }
+   }
+
+   stream << spawns_.size() << "\r\n";
+
+   uint32_t i = 0;
+   for (auto it: spawns_)
+   {
+      stream << it.index_ << it.x_ << it.y_ << it.dx_ << it.dy_ << "\r\n";
+   }
+}
+
+
+void SpawnMgr::LoadSpawns(QTextStream& stream)
+{
+   spawns_.clear();
+
+   uint32_t numSpawns = 0;
+   stream >> numSpawns;
+
+   for (uint32_t i = 0; i < numSpawns; ++i)
+   {
+      uint32_t index;
+      double x, y;
+      double dx, dy;
+      stream >> index >> x >> y >> dx >> dy;
+      spawns_.push_back({index, x, y, dx, dy});
+   }
+
+   spawnDelegate_.SetSpawns(spawns_);
+
+   for (auto it: spawns_)
+   {
+      qDebug() << it.index_ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  ")";
+   }
+}
+
+
+uint32_t SpawnMgr::NumSpawns()
+{
+   return spawns_.size();
+}
+
+
+SpawnMgr::SpawnInfo& SpawnMgr::GetSpawn(const uint32_t num)
+{
+   return spawns_[num];
 }

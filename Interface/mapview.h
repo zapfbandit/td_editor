@@ -27,18 +27,18 @@ public:
    void SetSettings(Settings* settings);
    void SetTileStore(TileStore* tileStore);
    void SetSelectedView(SelectedView* selectedView);
+   void SetSpawnMgr(SpawnMgr* spawnMgr);
    void SetDelegate(SpawnDelegate* spawnDelegate);
    void SetSize(const uint32_t width, const uint32_t height);
    void Render();
 
 public:
+   uint32_t Width() const;
+   uint32_t Height() const;
    uint32_t GetTile(const uint32_t x, const uint32_t y) const;
    uint32_t GetEgg (const uint32_t x, const uint32_t y) const;
    bool InBounds   (const int32_t  x, const int32_t  y) const;
 
-public:
-   uint32_t NumSpawns();
-   SpawnMgr::SpawnInfo& GetSpawn(const uint32_t num);
 
 public:
 
@@ -84,9 +84,8 @@ private:
    QGraphicsItemGroup* gridGroup_;
    QGraphicsItemGroup* mapGroup_;
 
-   std::vector<SpawnMgr::SpawnInfo> spawns_;
-
    SpawnDelegate* spawnDelegate_{nullptr};
+   SpawnMgr* spawnMgr_{nullptr};
 
    static constexpr double TILE_SIZE = 1.0;
 };
