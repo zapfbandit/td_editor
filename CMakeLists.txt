@@ -24,7 +24,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-set(CMAKE_PREFIX_PATH "C:/Qt/Qt6.1.2/6.1.2/mingw81_64/lib/cmake")
+set(CMAKE_PREFIX_PATH "D:/Qt/6.6.3/mingw_64/lib/cmake")
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
@@ -107,10 +107,3 @@ set_target_properties(TDEditor PROPERTIES
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(TDEditor)
 endif()
-
-if (NOT DEFINED ENV{ADT_BUILD_SERVER})
-   add_custom_command(TARGET TDEditor POST_BUILD
-      COMMAND "C:/AdtDevEnv/Core/signtool/signtool.exe" sign /fd SHA256 /f "Code Signing.cer" TDEditor.exe
-   )
-endif()
-

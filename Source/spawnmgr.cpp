@@ -27,7 +27,7 @@ void SpawnMgr::MakeSpawns()
          double y = spawn.y_ + spawn.dy_ + 0.5;
          double dy = -spawn.dy_;
 
-         qDebug() << x << y << dx << dy;
+qDebug() << i << x << y << dx << dy;
 
          for (uint32_t i = 0; i < 1; ++i)
          {
@@ -99,6 +99,13 @@ void SpawnMgr::SaveSpawns(QTextStream& stream, const MapView& map)
 }
 
 
+void SpawnMgr::SaveEvents(QTextStream& stream, QTreeWidget& tree)
+{
+   stream << numStages_ << "\r\n";
+   stream << "Events\r\n";
+}
+
+
 void SpawnMgr::LoadSpawns(QTextStream& stream)
 {
    spawns_.clear();
@@ -117,9 +124,38 @@ void SpawnMgr::LoadSpawns(QTextStream& stream)
 
    spawnDelegate_.SetSpawns(spawns_);
 
-   for (auto it: spawns_)
+//*
+for (auto it: spawns_)
+{
+qDebug() << it.index_ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  ")";
+}
+//*/
+}
+
+void SpawnMgr::LoadEvents(QTextStream& stream)
+{
+   events_.clear();
+
+   stream >> numStages_;
+
+   QString eventsStr; // Should be "Events"
+   stream >> eventsStr;
+
+   uint32_t numEvents = 0;
+   stream >> numEvents;
+
+   for (uint32_t i = 0; i < numEvents; ++i)
    {
-      qDebug() << it.index_ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  ")";
+      uint32_t index = 0;
+      uint32_t stage = 0;
+      uint32_t percent = 0;
+      uint32_t spawnIndex = 0;
+      uint32_t numEnemies = 0;
+      QString  enemyType = "";
+
+      stream >> index >> stage >> percent >> spawnIndex >> numEnemies >> enemyType;
+
+      events_.push_back({index, stage, percent, spawnIndex, numEnemies, enemyType});
    }
 }
 

@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent):
    QTimer::singleShot(0, this, &MainWindow::OpenLastMap);
 
    QTimer *timer = new QTimer(this);
-   timer->start(100);
+   timer->start(100); // I guess this is a pretty important number...
    connect(timer, &QTimer::timeout,
            this, &MainWindow::Tick);
 }

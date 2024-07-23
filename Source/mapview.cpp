@@ -323,11 +323,21 @@ for (uint32_t y = 0; y < height_; ++y)
 //qDebug() << readStr;
       if (readStr != "Spawns")
       {
-         qDebug() << "MapView::OpenFile Killed us all";
+         qDebug() << "MapView::OpenFile no \"Spawns\" killed us all";
          exit(EXIT_FAILURE);
       }
 
       spawnMgr_->LoadSpawns(stream);
+
+      stream >> readStr;
+//qDebug() << readStr;
+      if (readStr != "Stages")
+      {
+         qDebug() << "MapView::OpenFile no \"Stages\" killed us all";
+         exit(EXIT_FAILURE);
+      }
+
+      spawnMgr_->LoadEvents(stream);
 
       file.close();
 
