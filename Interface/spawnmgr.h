@@ -53,7 +53,7 @@ public:
    void SaveSpawns(QTextStream& stream, const MapView& map);
    void LoadSpawns(QTextStream& stream);
 
-   void SaveEvents(QTextStream& stream, QTreeWidget &tree);
+   void SaveEvents(QTextStream& stream, QTreeWidget* tree);
    void LoadEvents(QTextStream& stream);
 
 public:

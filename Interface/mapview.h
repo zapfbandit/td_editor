@@ -28,6 +28,7 @@ public:
    void SetTileStore(TileStore* tileStore);
    void SetSelectedView(SelectedView* selectedView);
    void SetSpawnMgr(SpawnMgr* spawnMgr);
+   void SetEventsTree(QTreeWidget* tree);
    void SetSize(const uint32_t width, const uint32_t height);
    void Render();
 
@@ -84,6 +85,7 @@ private:
    QGraphicsItemGroup* mapGroup_;
 
    SpawnMgr* spawnMgr_{nullptr};
+   QTreeWidget* tree_{nullptr};
 
    static constexpr double TILE_SIZE = 1.0;
 };

@@ -99,10 +99,43 @@ void SpawnMgr::SaveSpawns(QTextStream& stream, const MapView& map)
 }
 
 
-void SpawnMgr::SaveEvents(QTextStream& stream, QTreeWidget& tree)
+void SpawnMgr::SaveEvents(QTextStream& stream, QTreeWidget* tree)
 {
-   stream << numStages_ << "\r\n";
+   qDebug() << "SpawnMgr::SaveEvents";
+
+   int numStages = tree->topLevelItemCount();
+
+   stream << numStages << "\r\n";
    stream << "Events\r\n";
+
+   int numEvents = 0;
+
+   for (int stage = 0; stage < numStages; ++stage)
+   {
+      QTreeWidgetItem* stageItem = tree->topLevelItem(stage);
+      numEvents += stageItem->childCount();
+   }
+
+   stream << numEvents << "\r\n";
+
+   for (int stage = 0; stage < numStages; ++stage)
+   {
+      QTreeWidgetItem* stageItem = tree->topLevelItem(stage);
+      int numChildren = stageItem->childCount();
+
+      for (int event = 0; event < numChildren; ++event)
+      {
+         QTreeWidgetItem* eventItem = stageItem->child(event);
+
+         stream << (stage + 1)
+                << eventItem->data(1, Qt::DisplayRole).toUInt()
+                << eventItem->data(2, Qt::DisplayRole).toUInt()
+                << eventItem->data(3, Qt::DisplayRole).toUInt()
+                << ""
+                << eventItem->data(4, Qt::DisplayRole).toString()
+                << "\r\n";
+      }
+   }
 }
 
 

@@ -65,6 +65,12 @@ void MapView::SetSpawnMgr(SpawnMgr* spawnMgr)
 }
 
 
+void MapView::SetEventsTree(QTreeWidget* tree)
+{
+   tree_ = tree;
+}
+
+
 void MapView::SetSize(const uint32_t width, const uint32_t height)
 {
    qDebug() << "MapView::SetSize";
@@ -440,6 +446,12 @@ bool MapView::SaveToFile(const QString& path)
       stream << qSetFieldWidth(4) << Qt::right;
 
       spawnMgr_->SaveSpawns(stream, *this);
+
+      stream << qSetFieldWidth(0) << Qt::left;
+      stream << "Stages" << "\r\n";
+      stream << qSetFieldWidth(4) << Qt::right;
+
+      spawnMgr_->SaveEvents(stream, tree_);
 
       file.close();
 

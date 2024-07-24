@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent):
    ui->mapView_->SetSelectedView(ui->selectedView_);
 
    ui->mapView_->SetSpawnMgr(&spawnMgr_);
+   ui->mapView_->SetEventsTree(ui->eventTreeWidget_);
 
    ui->actionSave_->setDisabled(true);
    ui->actionSaveAs_->setDisabled(true);
