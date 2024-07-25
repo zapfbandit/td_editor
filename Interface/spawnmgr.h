@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QString>
 #include <QTreeWidget>
+#include <QSpinBox>
 
 
 class SpawnDelegate;
@@ -54,7 +55,7 @@ public:
    void LoadSpawns(QTextStream& stream);
 
    void SaveEvents(QTextStream& stream, QTreeWidget* tree);
-   void LoadEvents(QTextStream& stream);
+   void LoadEvents(QTextStream& stream, QSpinBox* numStagesSpinBox, QTreeWidget* tree);
 
 public:
 
@@ -64,7 +65,7 @@ private:
 
    SpawnDelegate& spawnDelegate_;
    SpriteMgr& spriteMgr_;
-   uint32_t numStages_;
+
    std::vector<SpawnInfo> spawns_;
    std::vector<EventInfo> events_;
 };

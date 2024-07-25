@@ -19,6 +19,11 @@ public:
    void SetSpawns(std::vector<SpawnMgr::SpawnInfo>& spawns);
    void SetEnemies(QStringList& enemiesStringList);
 
+public:
+
+   QString SpawnStr(const uint32_t index) const;
+   uint32_t SpawnIndex(const QString str) const;
+
 protected:
 
    void paint(QPainter* painter,

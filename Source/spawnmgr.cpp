@@ -118,6 +118,8 @@ void SpawnMgr::SaveEvents(QTextStream& stream, QTreeWidget* tree)
 
    stream << numEvents << "\r\n";
 
+   uint32_t eventId = 0;
+
    for (int stage = 0; stage < numStages; ++stage)
    {
       QTreeWidgetItem* stageItem = tree->topLevelItem(stage);
@@ -127,12 +129,13 @@ void SpawnMgr::SaveEvents(QTextStream& stream, QTreeWidget* tree)
       {
          QTreeWidgetItem* eventItem = stageItem->child(event);
 
-         stream << (stage + 1)
+         stream << eventId++
+                << (stage + 1)
                 << eventItem->data(1, Qt::DisplayRole).toUInt()
-                << eventItem->data(2, Qt::DisplayRole).toUInt()
+                << spawnDelegate_.SpawnIndex(eventItem->data(2, Qt::DisplayRole).toString())
                 << eventItem->data(3, Qt::DisplayRole).toUInt()
                 << ""
-                << eventItem->data(4, Qt::DisplayRole).toString()
+                << "\"" << eventItem->data(4, Qt::DisplayRole).toString()<< "\""
                 << "\r\n";
       }
    }
@@ -165,17 +168,34 @@ qDebug() << it.index_ << "(" << it.x_ << it.y_ << ") (" << it.dx_ << it.dy_ <<  
 //*/
 }
 
-void SpawnMgr::LoadEvents(QTextStream& stream)
+void SpawnMgr::LoadEvents(QTextStream& stream, QSpinBox* numStagesSpinBox, QTreeWidget* tree)
 {
    events_.clear();
 
-   stream >> numStages_;
+   uint32_t numStages = 0;
+   stream >> numStages;
 
    QString eventsStr; // Should be "Events"
    stream >> eventsStr;
 
    uint32_t numEvents = 0;
    stream >> numEvents;
+
+   if (numStagesSpinBox != nullptr)
+   {
+      numStagesSpinBox->setValue(numStages);
+   }
+
+   tree->clear();
+
+   QTreeWidgetItem** topLevelItems;
+   topLevelItems = new QTreeWidgetItem*[numStages];
+
+   for (uint32_t i = 0; i < numStages; ++i)
+   {
+      topLevelItems[i] = new QTreeWidgetItem(QStringList() << QString::number(i + 1));
+      tree->addTopLevelItem(topLevelItems[i]);
+   }
 
    for (uint32_t i = 0; i < numEvents; ++i)
    {
@@ -187,9 +207,17 @@ void SpawnMgr::LoadEvents(QTextStream& stream)
       QString  enemyType = "";
 
       stream >> index >> stage >> percent >> spawnIndex >> numEnemies >> enemyType;
-
       events_.push_back({index, stage, percent, spawnIndex, numEnemies, enemyType});
+
+      QTreeWidgetItem* item = new QTreeWidgetItem(QStringList() << "" << QString::number(percent) << spawnDelegate_.SpawnStr(spawnIndex) << QString::number(numEnemies) << enemyType);
+      item->setFlags(item->flags() | Qt::ItemIsEditable);
+
+      topLevelItems[stage - 1]->addChild(item);
    }
+
+   tree->expandAll();
+
+   delete [] topLevelItems;
 }
 
 

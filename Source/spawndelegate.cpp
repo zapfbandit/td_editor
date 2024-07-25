@@ -46,6 +46,31 @@ void SpawnDelegate::SetEnemies(QStringList& enemiesStringList)
 }
 
 
+QString SpawnDelegate::SpawnStr(const uint32_t index) const
+{
+   if (index < spawnsStringList_.size())
+   {
+      return spawnsStringList_[index];
+   }
+
+   return "";
+}
+
+
+uint32_t SpawnDelegate::SpawnIndex(const QString str) const
+{
+   for (uint32_t i = 0 ; i < spawnsStringList_.size(); ++i)
+   {
+      if (str == spawnsStringList_[i])
+      {
+         return i;
+      }
+   }
+
+   return spawnsStringList_.size();
+}
+
+
 void SpawnDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
    return QStyledItemDelegate::paint(painter, option, index);

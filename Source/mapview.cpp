@@ -343,7 +343,7 @@ for (uint32_t y = 0; y < height_; ++y)
          exit(EXIT_FAILURE);
       }
 
-      spawnMgr_->LoadEvents(stream);
+      spawnMgr_->LoadEvents(stream, nullptr, tree_);
 
       file.close();
 
