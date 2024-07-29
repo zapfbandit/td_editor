@@ -43,6 +43,7 @@ set(PROJECT_SOURCES
    Source/mapview.cpp
    Source/newdialog.cpp
    Source/eventseditor.cpp
+   Source/undoabletreewidgetitem.cpp
    Source/spawndelegate.cpp
    Source/percentdelegate.cpp
    Source/settings.cpp
@@ -61,6 +62,7 @@ set(PROJECT_SOURCES
    Interface/mapview.h
    Interface/newdialog.h
    Interface/eventseditor.h
+   Interface/undoabletreewidgetitem.h
    Interface/spawndelegate.h
    Interface/percentdelegate.h
    Interface/settings.h
@@ -106,4 +108,10 @@ set_target_properties(TDEditor PROPERTIES
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(TDEditor)
+endif()
+
+if (NOT DEFINED ENV{ADT_BUILD_SERVER})
+   add_custom_command(TARGET TDEditor POST_BUILD
+      COMMAND "C:/AdtDevEnv/Core/signtool/signtool.exe" sign /fd SHA256 /f "Code Signing.cer" TDEditor.exe
+   )
 endif()

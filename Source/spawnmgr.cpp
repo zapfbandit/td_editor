@@ -135,7 +135,7 @@ void SpawnMgr::SaveEvents(QTextStream& stream, QTreeWidget* tree)
                 << spawnDelegate_.SpawnIndex(eventItem->data(2, Qt::DisplayRole).toString())
                 << eventItem->data(3, Qt::DisplayRole).toUInt()
                 << ""
-                << "\"" << eventItem->data(4, Qt::DisplayRole).toString()<< "\""
+                << eventItem->data(4, Qt::DisplayRole).toString()
                 << "\r\n";
       }
    }

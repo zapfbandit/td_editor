@@ -80,6 +80,15 @@ MainWindow::MainWindow(QWidget *parent):
    connect(ui->eventTreeWidget_, &QTreeWidget::itemSelectionChanged,
            &eventsEditor_,       &EventsEditor::ItemSelectionChanged);
 
+   connect(&eventsEditor_, &EventsEditor::Changed,
+           this,           &MainWindow::EventChanged);
+
+   connect(&eventsEditor_, &EventsEditor::Created,
+           this,           &MainWindow::EventCreate);
+
+   connect(&eventsEditor_, &EventsEditor::Destroyed,
+           this,           &MainWindow::EventDestroy);
+
    const bool showGrid = settings_.ShowGrid();
    ui->actionShowGrid_->setChecked(showGrid);
    ui->mapView_->ShowGrid(showGrid);
@@ -258,7 +267,22 @@ void MainWindow::Undo()
    UndoEntry entry = undoStack_.back();
    undoStack_.pop_back();
 
-   ui->mapView_->DoChange(entry.x_, entry.y_, entry.oldTile_);
+   if (entry.type_ == UndoEnum::TileChange)
+   {
+      ui->mapView_->DoChange(entry.x_, entry.y_, entry.oldVal_);
+   }
+   else if (entry.type_ == UndoEnum::EventChange)
+   {
+      ///eventsEditor_.DoChange(entry.x_, entry.y_, entry.oldVal_);
+   }
+   else if (entry.type_ == UndoEnum::EventCreate)
+   {
+      ///eventsEditor_.DoCreate(entry.y_);
+   }
+   else if (entry.type_ == UndoEnum::EventDestroy)
+   {
+      ///eventsEditor_.DoDestroy(entry.y_);
+   }
 
    redoStack_.push_back(entry);
 
@@ -271,7 +295,22 @@ void MainWindow::Redo()
    UndoEntry entry = redoStack_.back();
    redoStack_.pop_back();
 
-   ui->mapView_->DoChange(entry.x_, entry.y_, entry.newTile_);
+   if (entry.type_ == UndoEnum::TileChange)
+   {
+      ui->mapView_->DoChange(entry.x_, entry.y_, entry.newVal_);
+   }
+   else if (entry.type_ == UndoEnum::EventChange)
+   {
+      ///eventsEditor_.DoChange(entry.x_, entry.y_, entry.newTile_);
+   }
+   else if (entry.type_ == UndoEnum::EventCreate)
+   {
+      ///eventsEditor_.DoCreate(entry.y_);
+   }
+   else if (entry.type_ == UndoEnum::EventDestroy)
+   {
+      ///eventsEditor_.DoDestroy(entry.y_);
+   }
 
    undoStack_.push_back(entry);
 
@@ -289,7 +328,7 @@ void MainWindow::SetMapPath(const QString& mapPath)
 
 void MainWindow::MakeChange(uint32_t x, uint32_t y, uint32_t oldTile, uint32_t newTile)
 {
-   undoStack_.push_back({x, y, oldTile, newTile});
+   undoStack_.push_back({UndoEnum::TileChange, x, y, oldTile, newTile});
 
    RedrawTitle();
 }
@@ -300,6 +339,36 @@ void MainWindow::MakeDirty()
     saveUndoCount_ = UINT32_MAX;
 
     RedrawTitle();
+}
+
+
+void MainWindow::EventChanged()
+{
+   qDebug() << "MainWindow::EventChanged()";
+
+   undoStack_.push_back({UndoEnum::EventChange, 0, 0, 0, 0});
+
+   RedrawTitle();
+}
+
+
+void MainWindow::EventCreate()
+{
+   qDebug() << "MainWindow::EventCreate()";
+
+   undoStack_.push_back({UndoEnum::EventCreate, 0, 0, 0, 0});
+
+   RedrawTitle();
+}
+
+
+void MainWindow::EventDestroy()
+{
+   qDebug() << "MainWindow::EventDestroy()";
+
+   undoStack_.push_back({UndoEnum::EventDestroy, 0, 0, 0, 0});
+
+   RedrawTitle();
 }
 
 

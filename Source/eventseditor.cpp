@@ -4,6 +4,7 @@
 
 #include "spawndelegate.h"
 #include "percentdelegate.h"
+#include "undoabletreewidgetitem.h"
 
 
 EventsEditor::EventsEditor(Ui::MainWindow* ui):
@@ -20,6 +21,9 @@ void EventsEditor::Setup(SpawnDelegate* spawnDelegate)
 
    ui_->addPushButton_->setEnabled(false);
    ui_->removePushButton_->setEnabled(false);
+
+   connect(ui_->eventTreeWidget_, &QTreeWidget::itemChanged,
+           this,                  &EventsEditor::ItemChanged);
 }
 
 
@@ -53,11 +57,13 @@ void EventsEditor::ApplyNumStages()
    {
       if (ui_->eventTreeWidget_->findItems(QString::number(row), Qt::MatchExactly, 0).size() == 0)
       {
-         QTreeWidgetItem* item = new QTreeWidgetItem(QStringList() << QString::number(row));
+         UndoableTreeWidgetItem* item = new UndoableTreeWidgetItem(QStringList() << QString::number(row));
 
          ui_->eventTreeWidget_->addTopLevelItem(item);
       }
    }
+
+   emit Changed();
 }
 
 
@@ -65,7 +71,7 @@ void EventsEditor::Add()
 {
    qDebug() << "EventsEditor::Add";
 
-   QTreeWidgetItem* newItem = new QTreeWidgetItem(QStringList() << "" << "50" << "(0, 0)" << "3" << "Zombie");
+   UndoableTreeWidgetItem* newItem = new UndoableTreeWidgetItem(QStringList() << "" << "50" << "" << "3" << "Zombie");
    newItem->setFlags(newItem->flags() | Qt::ItemIsEditable);
 
    int pos = 0;
@@ -80,6 +86,8 @@ void EventsEditor::Add()
    topSel_->insertChild(pos, newItem);
    topSel_->setExpanded(true);
    ui_->eventTreeWidget_->setCurrentItem(newItem);
+
+   emit Created();
 }
 
 
@@ -90,6 +98,8 @@ void EventsEditor::Remove()
    QTreeWidgetItem* selItem = selItem_;
    topSel_->removeChild(selItem);
    delete selItem;
+
+   emit Destroyed();
 }
 
 
@@ -118,4 +128,12 @@ void EventsEditor::ItemSelectionChanged()
       ui_->addPushButton_->setEnabled(false);
       ui_->removePushButton_->setEnabled(false);
    }
+}
+
+
+void EventsEditor::ItemChanged(QTreeWidgetItem * item, int column)
+{
+   qDebug() << "EventsEditor::ItemChanged";
+
+   emit Changed();
 }
