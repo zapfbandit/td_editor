@@ -133,7 +133,9 @@ void EventsEditor::ItemSelectionChanged()
 
 void EventsEditor::ItemChanged(QTreeWidgetItem * item, int column)
 {
-   qDebug() << "EventsEditor::ItemChanged";
+   UndoableTreeWidgetItem* undoableItem(dynamic_cast<UndoableTreeWidgetItem*>(item));
+
+   qDebug() << "EventsEditor::ItemChanged" << undoableItem->OldValue() << undoableItem->data(column, Qt::DisplayRole);
 
    emit Changed();
 }

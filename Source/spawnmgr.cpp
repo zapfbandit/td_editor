@@ -4,6 +4,8 @@
 #include "spritemgr.h"
 #include "mapview.h"
 
+#include "undoabletreewidgetitem.h"
+
 
 SpawnMgr::SpawnMgr(SpawnDelegate& spawnDelegate,
                    SpriteMgr&     spriteMgr):
@@ -209,7 +211,7 @@ void SpawnMgr::LoadEvents(QTextStream& stream, QSpinBox* numStagesSpinBox, QTree
       stream >> index >> stage >> percent >> spawnIndex >> numEnemies >> enemyType;
       events_.push_back({index, stage, percent, spawnIndex, numEnemies, enemyType});
 
-      QTreeWidgetItem* item = new QTreeWidgetItem(QStringList() << "" << QString::number(percent) << spawnDelegate_.SpawnStr(spawnIndex) << QString::number(numEnemies) << enemyType);
+      UndoableTreeWidgetItem* item = new UndoableTreeWidgetItem(QStringList() << "" << QString::number(percent) << spawnDelegate_.SpawnStr(spawnIndex) << QString::number(numEnemies) << enemyType);
       item->setFlags(item->flags() | Qt::ItemIsEditable);
 
       topLevelItems[stage - 1]->addChild(item);
