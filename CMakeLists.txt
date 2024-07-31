@@ -24,7 +24,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-set(CMAKE_PREFIX_PATH "D:/Qt/6.6.3/mingw_64/lib/cmake")
+set(CMAKE_PREFIX_PATH "C:/Qt/Qt6.1.2/6.1.2/mingw81_64/lib/cmake")
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
@@ -43,7 +43,6 @@ set(PROJECT_SOURCES
    Source/mapview.cpp
    Source/newdialog.cpp
    Source/eventseditor.cpp
-   Source/undoabletreewidgetitem.cpp
    Source/spawndelegate.cpp
    Source/percentdelegate.cpp
    Source/settings.cpp
@@ -62,7 +61,6 @@ set(PROJECT_SOURCES
    Interface/mapview.h
    Interface/newdialog.h
    Interface/eventseditor.h
-   Interface/undoabletreewidgetitem.h
    Interface/spawndelegate.h
    Interface/percentdelegate.h
    Interface/settings.h

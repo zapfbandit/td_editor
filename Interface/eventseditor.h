@@ -17,12 +17,6 @@ public:
 
    void Setup(SpawnDelegate* spawnDelegate);
 
-signals:
-
-   void Changed();
-   void Created();
-   void Destroyed();
-
 public slots:
 
    void ApplyNumStages();
@@ -31,8 +25,6 @@ public slots:
    void Remove();
 
    void ItemSelectionChanged();
-
-   void ItemChanged(QTreeWidgetItem * item, int column);
 
 private:
 

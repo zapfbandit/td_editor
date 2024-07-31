@@ -44,10 +44,6 @@ public slots:
    void MakeDirty();
    void MakeClean();
 
-   void EventChanged();
-   void EventCreate();
-   void EventDestroy();
-
 private:
    void SetMapPath(const QString& mapPath);
    void DoOpenMap(const QString& mapPath);
@@ -76,17 +72,8 @@ private:
 
    Game game_;
 
-   enum class UndoEnum
-   {
-      TileChange  = 0x1,
-      EventChange = 0x2,
-      EventCreate = 0x3,
-      EventDestroy = 0x4
-   };
-
    struct UndoEntry
    {
-      UndoEnum type_;
       uint32_t x_;
       uint32_t y_;
       uint32_t oldVal_;
