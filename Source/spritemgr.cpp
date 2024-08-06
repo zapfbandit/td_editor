@@ -8,42 +8,31 @@
 #include "pixmapstore.h"
 
 
-SpriteMgr::SpriteMgr(const uint32_t maxSprites):
-   maxSprites_(maxSprites)
-{
-qDebug() << QString("About to allocate %0 sprites").arg(maxSprites);
-
-   sprites_ = new Sprite[maxSprites_];
-
-qDebug() << "OK";
-}
+SpriteMgr::SpriteMgr()
+{}
 
 
 SpriteMgr::~SpriteMgr()
 {
 qDebug() << "SpriteMgr::It's a killin' time...";
 
-   freeSprites_.clear();
-   usedSprites_.clear();
-   delete [] sprites_;
-}
-
-
-void SpriteMgr::Init(QGraphicsScene* scene,
-                     PixmapStore*    store,
-                     MapView*        map)
-{
-//qDebug() << "SpriteMgr::Init(...)";
-
-   for (uint32_t i = 0; i < maxSprites_; ++i)
+   for (Sprite* sprite: usedSprites_)
    {
-      sprites_[i].Init(this, scene, store, map);
-      freeSprites_.push_back(&sprites_[i]);
+      delete sprite;
    }
+
+   usedSprites_.clear();
 }
 
 
-uint32_t SpriteMgr::Add(const double   x,
+
+void SpriteMgr::Add(Sprite* sprite)
+{
+   usedSprites_.push_back(sprite);
+}
+
+
+/*uint32_t SpriteMgr::Add(const double   x,
                         const double   y,
                         const double   dx,
                         const double   dy,
@@ -71,7 +60,7 @@ uint32_t SpriteMgr::Add(const double   x,
    }
 
    return false;
-}
+}*/
 
 
 void SpriteMgr::Tick(const double renderTimeInS)
@@ -108,7 +97,7 @@ qDebug() << QString("SpriteMgr::AddIndex(\"%0\", %1, %2)").
 }
 
 
-SpriteMgr::SpriteData* SpriteMgr::GetIndex(const QString& spritePath)
+SpriteMgr::SpriteData* SpriteMgr::GetData(const QString& spritePath)
 {
 qDebug() << QString("SpriteMgr::GetIndex(spritePath = %0)").arg(spritePath);
 
@@ -139,5 +128,4 @@ void SpriteMgr::MarkForDeath(Sprite* sprite)
 void SpriteMgr::FreeSprite(Sprite* sprite)
 {
    usedSprites_.remove(sprite);
-   freeSprites_.push_front(sprite);
 }

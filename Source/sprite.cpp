@@ -6,41 +6,27 @@
 #include "pixmapstore.h"
 
 
-Sprite::Sprite():
+/*static*/ bool Sprite::s_inited_ = false;
+/*static*/ SpriteMgr* Sprite::s_mgr_ = nullptr;
+/*static*/ QGraphicsScene* Sprite::s_scene_ = nullptr;
+/*static*/ PixmapStore* Sprite::s_store_ = nullptr;
+/*static*/ MapView* Sprite::s_map_ = nullptr;
+
+
+Sprite::Sprite(const double   x,
+               const double   y,
+               const double   dx,
+               const double   dy,
+               const double   scale,
+
+               const QString& spriteType,
+               const QString& spriteName,
+               const uint32_t numFrames,
+               const double   framesPerSec,
+               const double   gridPerSec):
    item_(nullptr)
-{}
-
-
-Sprite::~Sprite()
-{}
-
-
-
-void Sprite::Init(SpriteMgr*      mgr,
-                  QGraphicsScene* scene,
-                  PixmapStore*    store,
-                  MapView*        map)
 {
-   mgr_ = mgr;
-   scene_ = scene;
-   store_ = store;
-   map_   = map;
-}
-
-
-bool Sprite::Create(const double   x,
-                    const double   y,
-                    const double   dx,
-                    const double   dy,
-                    const double   scale,
-
-                    const QString& spriteType,
-                    const QString& spriteName,
-                    const uint32_t numFrames,
-                    const double   framesPerSec,
-                    const double   gridPerSec)
-{
-//qDebug() << QString("Sprite::Create(...)");
+   qDebug() << QString("Sprite::Sprite(...)");
 
    frame_ = 0;
    dist_ = 0.0;
@@ -60,7 +46,7 @@ bool Sprite::Create(const double   x,
 
    timeInSec_ = secsPerFrame_ * numFrames_ * rand() / RAND_MAX;
 
-   QPixmap& pixmap = *store_->GetPixmap(baseFrameIndex_);
+   QPixmap& pixmap = *s_store_->GetPixmap(baseFrameIndex_);
 
    // Centre the sprite
 
@@ -69,22 +55,37 @@ bool Sprite::Create(const double   x,
 
 //qDebug() << "Pos" << x << y;
 
-   item_ = scene_->addPixmap(pixmap);
+   item_ = s_scene_->addPixmap(pixmap);
    item_->setScale(scale / pixmap.width());
    item_->setPos(x, y);
 
    qDebug() << item_;
 
-   Tick(0.0);
+   Tick(0.0);}
 
-   return true;
+
+Sprite::~Sprite()
+{}
+
+
+
+/*static*/ void Sprite::Init(SpriteMgr*      mgr,
+                             QGraphicsScene* scene,
+                             PixmapStore*    store,
+                             MapView*        map)
+{
+   s_mgr_ = mgr;
+   s_scene_ = scene;
+   s_store_ = store;
+   s_map_   = map;
+   s_inited_ = true;
 }
 
 
 bool Sprite::Destroy()
 {
 //qDebug() << "Sprite::Destroy()";
-   scene_->removeItem(item_);
+   s_scene_->removeItem(item_);
    return true;
 }
 
@@ -126,7 +127,7 @@ void Sprite::SetVel(const double dx,
       }
    }
 
-   baseFrameIndex_ = store_->GetPixmapIndex(QString("%0/%1/Walk/%2").
+   baseFrameIndex_ = s_store_->GetPixmapIndex(QString("%0/%1/Walk/%2").
                                              arg(spriteType_,
                                                  spriteName_,
                                                  spriteDir_));
@@ -149,7 +150,7 @@ void Sprite::Tick(const double renderTimeInSec)
 
    if (frame_ != lastFrame)
    {
-      item_->setPixmap(*store_->GetPixmap(frame_));
+      item_->setPixmap(*s_store_->GetPixmap(frame_));
    }
 
 //qDebug() << "scale_ = " << scale_ << "item_->scale() = " << item_->scale();
@@ -177,15 +178,15 @@ void Sprite::Tick(const double renderTimeInSec)
 
 qDebug() << "DoIt: " << x_ << y_ << gx << gy;
 
-      if (map_->InBounds(gx, gy) == false)
+      if (s_map_->InBounds(gx, gy) == false)
       {
          // Something really really bad... maybe a counter
          qDebug() << "BAD !!!";
       }
       else
       {
-         uint32_t currTile = map_->GetTile(gx, gy);
-         uint32_t currEgg  = map_->GetEgg (gx, gy);
+         uint32_t currTile = s_map_->GetTile(gx, gy);
+         uint32_t currEgg  = s_map_->GetEgg (gx, gy);
 
          struct Dir
          {
@@ -207,10 +208,10 @@ qDebug() << "DoIt: " << x_ << y_ << gx << gy;
             int32_t testX = gx + dir[testDir].dx;
             int32_t testY = gy + dir[testDir].dy;
 
-            if (map_->InBounds(testX, testY) == true)
+            if (s_map_->InBounds(testX, testY) == true)
             {
-               uint32_t testTile = map_->GetTile(testX, testY);
-               uint32_t testEgg  = map_->GetEgg (testX, testY);
+               uint32_t testTile = s_map_->GetTile(testX, testY);
+               uint32_t testEgg  = s_map_->GetEgg (testX, testY);
 
                if ((((currTile - 1) & dir[testDir].out) == 0) &&
                    (((testTile - 1) & dir[testDir].in)  == 0) &&
@@ -229,7 +230,7 @@ qDebug() << "DoIt: " << x_ << y_ << gx << gy;
          {
 qDebug() << "Killing sprite...";
 
-            mgr_->MarkForDeath(this);
+            s_mgr_->MarkForDeath(this);
 
             // Egg Health -= Baddy Heath
          }

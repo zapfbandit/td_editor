@@ -51,7 +51,6 @@ set(PROJECT_SOURCES
    Source/sprite.cpp
    Source/spritemgr.cpp
    Source/game.cpp
-   Source/Enemies/Zombie.cpp
     
    Interface/mainwindow.h
    Interface/tile.h
@@ -69,7 +68,6 @@ set(PROJECT_SOURCES
    Interface/sprite.h
    Interface/spritemgr.h
    Interface/game.h
-   Interface/Enemies/Zombie.h
 
    Resources/mainwindow.ui
    Resources/newdialog.ui

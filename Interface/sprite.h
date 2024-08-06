@@ -15,16 +15,26 @@ class Sprite
 {
 public:
 
-   Sprite();
+   Sprite(const double   x,
+          const double   y,
+          const double   dx,
+          const double   dy,
+          const double   scale,
+
+          const QString& spriteType,
+          const QString& spriteName,
+          const uint32_t numFrames,
+          const double   framesPerSec,
+          const double   gridPerSec);
 
    ~Sprite();
 
 public:
 
-   void Init(SpriteMgr*      mgr,
-             QGraphicsScene* scene,
-             PixmapStore*    store,
-             MapView*        map);
+   static void Init(SpriteMgr*      mgr,
+                    QGraphicsScene* scene,
+                    PixmapStore*    store,
+                    MapView*        map);
 
    virtual bool Create(const double   x,
                        const double   y,
@@ -60,10 +70,11 @@ public:
 
 private:
 
-   SpriteMgr* mgr_;
-   QGraphicsScene* scene_;
-   PixmapStore* store_;
-   MapView* map_;
+   static bool s_inited_;
+   static SpriteMgr* s_mgr_;
+   static QGraphicsScene* s_scene_;
+   static PixmapStore* s_store_;
+   static MapView* s_map_;
 
    double timeInSec_;
 

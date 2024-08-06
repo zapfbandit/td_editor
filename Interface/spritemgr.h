@@ -19,7 +19,7 @@ class SpriteMgr
 {
 public:
 
-   SpriteMgr(const uint32_t  maxSprites);
+   SpriteMgr();
 
    ~SpriteMgr();
 
@@ -37,7 +37,9 @@ public:
              PixmapStore*    store,
              MapView*        map);
 
-   uint32_t Add(const double   x,
+   void Add(Sprite* sprite);
+
+   /*uint32_t Add(const double   x,
                 const double   y,
                 const double   dx,
                 const double   dy,
@@ -47,7 +49,7 @@ public:
                 const QString& spriteName,
                 const uint32_t numFrames,
                 const double   framesPerSec,
-                const double   gridPerSec);
+                const double   gridPerSec);*/
 
    void Tick(const double renderTimeInS);
 
@@ -55,7 +57,7 @@ public:
                  const uint32_t spriteIndex,
                  const uint32_t spriteNumFrames);
 
-   SpriteData* GetIndex(const QString& spritePath);
+   SpriteData* GetData(const QString& spritePath);
 
    uint32_t NumSprites() const;
 
@@ -64,12 +66,8 @@ public:
 
 private:
 
-   const uint32_t maxSprites_;
-   Sprite* sprites_;
-
    std::map<QString, SpriteData> spriteIndexMap_;
 
-   std::list<Sprite*> freeSprites_;
    std::list<Sprite*> usedSprites_;
 
    std::vector<Sprite*> deadSprites_;

@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent):
    tileStore_(settings_.TilesPath()),
    eventsEditor_(ui),
    pixmapStore_(settings_.SpritesPath()),
-   spriteMgr_(1024),
    spawnMgr_(spawnDelegate_, spriteMgr_),
    saveUndoCount_(0),
    game_(spriteMgr_)
@@ -87,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent):
    restoreState(settings_.WindowState());
    restoreGeometry(settings_.WindowGeometry());
 
-   spriteMgr_.Init(ui->mapView_->scene(), &pixmapStore_, ui->mapView_);
+   Sprite::Init(&spriteMgr_, ui->mapView_->scene(), &pixmapStore_, ui->mapView_);
 
    QTimer::singleShot(0, this, &MainWindow::OpenLastMap);
 

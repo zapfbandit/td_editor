@@ -40,7 +40,8 @@ qDebug() << i << x << y << dx << dy;
             }
             while (px*px + py*py > 1);
 
-            spriteMgr_.Add(x + 0.2*px, y + 0.2*py, dx, dy, 0.5, "Enemies", "Zombie", 6, 10, 0.2);
+            Sprite* newSprite = new Sprite(x + 0.2*px, y + 0.2*py, dx, dy, 0.5, "Enemies", "Zombie", 6, 10, 0.2);
+            spriteMgr_.Add(newSprite);
          }
       }
    }
